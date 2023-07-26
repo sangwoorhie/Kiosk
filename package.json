@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "nodemon --exec babel-node init.js"
   },
+  "type": "commonjs",
   "author": "",
   "license": "ISC",
   "dependencies": {
@@ -14,9 +15,9 @@
     "cookie-parser": "^1.4.6",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
+    "http": "^0.0.1-security",
     "jsonwebtoken": "^9.0.1",
     "mysql2": "^3.5.2",
-    "prettier": "^3.0.0",
     "sequelize": "^6.32.1"
   },
   "devDependencies": {
@@ -25,6 +26,7 @@
     "@babel/node": "^7.22.6",
     "@babel/preset-env": "^7.22.9",
     "nodemon": "^3.0.1",
+    "prettier": "^3.0.0",
     "sequelize-cli": "^6.6.1"
   }
 }

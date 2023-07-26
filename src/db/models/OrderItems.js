@@ -10,6 +10,7 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
 
+      // OrderItems모델 - Items모델 : N:1관계
       this.belongsTo(models.Items, {
         targetKey: 'itemId',
         foreignKey: 'itemId'

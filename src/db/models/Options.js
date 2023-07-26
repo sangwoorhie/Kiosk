@@ -10,6 +10,7 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
 
+      // Options모델-Items모델 : 1:N관계
       this.hasMany(models.Items, {
         sourceKey: 'optionId',
         foreignKey: 'optionId'

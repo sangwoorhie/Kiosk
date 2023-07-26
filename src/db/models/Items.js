@@ -1,6 +1,7 @@
-'use strict';
-const { Model } = require('sequelize');
-module.exports = (sequelize, DataTypes) => {
+// 'use strict';
+import { Model, DataTypes } from 'sequelize'
+import sequelize from '../sequelize.js';
+// module.exports = (sequelize, DataTypes) => {
   class Items extends Model {
     /**
      * Helper method for defining associations.
@@ -10,17 +11,21 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
 
+      // Items모델-Options모델 : N:1관계
       this.belongsTo(models.Options, {
         targetKey: 'optionId',
         foreignKey: 'optionId'
       });
 
+      // Items모델-OrderItems모델 : 1:N관계
       this.hasMany(models.OrderItems, {
         sourceKey: 'itemId',
         foreignKey: 'itemId'
       });
 
+      // Items모델-ItemOrderCustomers모델 : 1:1관계
       this.hasOne(models.ItemOrderCustomers, {
+        sourceKey: 'itemId',
         foreignKey: 'itemId'
       });
     }
@@ -34,7 +39,8 @@ module.exports = (sequelize, DataTypes) => {
     },
     optionId: {
       allowNull: false,
-      type: DataTypes.INTEGER,
+      type: DataTypes.BIGINT,
+      defaultValue: 0
     },
     name: {
       allowNull: false,
@@ -42,15 +48,17 @@ module.exports = (sequelize, DataTypes) => {
     },
     price: {
       allowNull: false,
-      type: DataTypes.INTEGER,
+      type: DataTypes.BIGINT,
     },
     type: {
       allowNull: false,
-      type: DataTypes.INTEGER,
+      type: DataTypes.ENUM,
+      values: ['COFFEE', 'JUICE', 'FOOD']
     },
     amount: {
       allowNull: false,
-      type: DataTypes.INTEGER,
+      type: DataTypes.BIGINT,
+      defaultValue: 0
     },
     createdAt: {
       allowNull: false,
@@ -66,5 +74,8 @@ module.exports = (sequelize, DataTypes) => {
     sequelize,
     modelName: 'Items',
   });
-  return Items;
-};
+
+export default Items;
+
+  // return Items;
+// };

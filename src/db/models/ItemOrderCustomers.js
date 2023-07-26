@@ -10,12 +10,15 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
 
-      // Comments모델 - Users모델 : N:1관계
-      this.hasOne(models.Items, {
+      // ItemOrderCustomers모델 - Items모델 : N:1관계
+      this.belongsTo(models.Items, {
+        targetKey: 'itemId',
         foreignKey: 'itemId'
       });
 
-      this.hasOne(models.OrderCustomers, {
+      // ItemOrderCustomers모델 - OrderCustomers모델 : N:1관계
+      this.belongsTo(models.OrderCustomers, {
+        targetKey: 'orderCustomerId',
         foreignKey: 'orderCustomerId'
       });
     }

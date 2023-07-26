@@ -21,11 +21,6 @@ module.exports = {
       name: {
         allowNull: false,
         type: Sequelize.STRING,
-        references: {
-          model: "OrderCustomers",
-          key: "orderCustomerId",
-        },
-        onDelete: "CASCADE",
       },
       price: {
         allowNull: false,
@@ -33,11 +28,12 @@ module.exports = {
       },
       type: {
         allowNull: false,
-        type: Sequelize.INTEGER
+        type: Sequelize.ENUM,
       },
       amount: {
         allowNull: false,
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        defaultValue: 0
       },
       createdAt: {
         allowNull: false,

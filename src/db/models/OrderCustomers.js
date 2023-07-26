@@ -10,7 +10,9 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
 
-      this.hasOne(models.ItemOrderCustomers, {
+      // OrderCustomers모델 - ItemOrderCustomers모델 : 1:N관계
+      this.hasMany(models.ItemOrderCustomers, {
+        sourceKey: 'orderCustomerId',
         foreignKey: 'orderCustomerId'
       });
     }

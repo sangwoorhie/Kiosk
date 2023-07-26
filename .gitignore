@@ -156,4 +156,5 @@ node_modules/
 
 # End of https://www.toptal.com/developers/gitignore/
 
-node_modules
+node_modules/
+.env
