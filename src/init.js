@@ -15,7 +15,7 @@ export class Server {
     };
 
     DBconnection = () => {
-        return this.SQAuthenticate().then(this.sequelizeSync)
+        return this.SQAuthenticate().then(this.sequelizeSync);
     };
 
     SQAuthenticate = () => {
@@ -24,7 +24,7 @@ export class Server {
     };
 
     sequelizeSync = () => {
-        return sequelize.sync({force: false});
+        return sequelize.sync({force: false}); // sync써도 디비 안날라가게해줌
     };
 
     // 코드 마지막에 실행되는 runServer()매서드.

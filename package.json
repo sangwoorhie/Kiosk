@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "nodemon --exec babel-node init.js"
   },
-  "type": "commonjs",
+  "type": "module",
   "author": "",
   "license": "ISC",
   "dependencies": {

@@ -40,6 +40,7 @@ export class ExpressApp {
     }
     }
 }
+// npm run dev
 
 
 // const app = express();
