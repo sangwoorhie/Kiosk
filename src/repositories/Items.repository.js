@@ -10,6 +10,7 @@ class ItemRepository{
     }
 
     // 2.상품 옵션추가
+    
 
     // 3-(1) 상품 전체 목록조회
     getAllItems = async () => {
@@ -46,7 +47,6 @@ class ItemRepository{
         return deleteItem;
     }
 }
-
 
 
 export default ItemRepository;

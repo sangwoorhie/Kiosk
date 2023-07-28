@@ -1,6 +1,8 @@
 import Message from './message.service.js';
+import { ItemType } from '../db/models/Items.js'
 import ItemRepository from '../repositories/Items.repository.js';
 
+// message파일
 const anonymous = new Message('이름');
 const unspecifiedPrice = new Message('가격'); 
 const correctPrice = new Message('알맞은 가격');
@@ -14,13 +16,13 @@ class ItemService {
         const add = new Message('상품 추가');
 
         try{
-        if(!name.length) {
+        if(!name.length){
             return anonymous.undefined(); // Message폴더 함수
         } else if (!price) {
             return unspecifiedPrice.undefined(); // Message폴더 함수
         } else if (price < 0){
             return correctPrice.undefined();
-        } else if (!['COFFEE', 'JUICE', 'FOOD'].includes(type)) {
+        } else if (!Object.values(ItemType).includes(type)){
             return {
                 status: 400,
                 message: "알맞은 타입을 지정해주세요."

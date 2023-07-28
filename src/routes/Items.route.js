@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import cookieParser from 'cookie-parser'
 import ItemsController from '../controller/Items.controller.js'
-import authmiddleware from '../middlewares/middleware'
+// import authmiddleware from '../middlewares/middleware.js'
 
 const router = Router();
 router.use(cookieParser());
@@ -13,8 +13,8 @@ const itemsController = new ItemsController();
 // 1. 상품 추가 API  : POST api/items
 router.post('/items', itemsController.addItems);
 
-// 2. 상품 옵션 추가 API : POST api/items/options
-router.post('/items/options', itemsController.optionItems);
+// 2. 상품 옵션 추가 API : POST api/items/options // optionId
+router.post('/items/:itemId/options', itemsController.optionItems);
 
 // 3. 상품 목록 조회 API : GET api/items (전체조회/타입별조회)
 router.get('/items', itemsController.getItems);

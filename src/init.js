@@ -1,7 +1,7 @@
 import dotenv from 'dotenv'; // 환경변수설정 라이브러리
 import Http from 'http';
-import { ExpressApp } from './app.js';
-import sequelize from './db/sequelize';
+import { ExpressApp } from './app.js'; // app.js파일에서 ExpressApp 클래스 하나만을 선택했으므로 선택사항중 하나를 선택할 수 있는 경우에는 변수에 중괄호 붙음.
+import sequelize from './db/sequelize.js'; // export가 default일때는 변수에 중괄호 안함
 
 dotenv.config(); // 환경변수설정 라이브러리, process.env로 실행
 
@@ -23,8 +23,9 @@ export class Server {
         return sequelize.authenticate();
     };
 
-    sequelizeSync = () => {
-        return sequelize.sync({force: false}); // sync써도 디비 안날라가게해줌
+    // 동기화
+    sequelizeSync = () => { // .sync로 스키마를 만듦. 마이그레이션 없어도 됨
+        return sequelize.sync({force: false}); // (force: false): sync써도 디비 안날라가게해줌
     };
 
     // 코드 마지막에 실행되는 runServer()매서드.
@@ -50,3 +51,4 @@ export class Server {
 
 const server = new Server(); // 서버 객체를 만들고,
 server.runServer(); // 서버를 실행함.
+

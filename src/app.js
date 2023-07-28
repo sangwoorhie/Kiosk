@@ -17,16 +17,9 @@ export class ExpressApp {
         this.app.use(cookieParser());
     };
 
-    setAppRouter = () => { // 두번째실행 -> 
+    setAppRouter = () => { // 두번째실행 -> route 연결
         try{
-        this.app.use('/api', routes, (error, request, response) => {
-            response.status(400).json({
-                success: false,
-                message: error.message,
-            });
-        });
-
-        this.app.use('/api', (req, res, next) => {
+        this.app.use('/api', routes, (req, res, next, error) => {
             return res.status(200).json({
                 success: true,
                 message: "연결되었습니다."

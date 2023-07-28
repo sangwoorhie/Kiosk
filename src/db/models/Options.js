@@ -1,22 +1,8 @@
-'use strict';
-const { Model } = require('sequelize');
-module.exports = (sequelize, DataTypes) => {
-  class Options extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
-    static associate(models) {
-      // define association here
+import { Model, DataTypes } from 'sequelize';
+import sequelize from '../sequelize.js'
 
-      // Options모델-Items모델 : 1:N관계
-      this.hasMany(models.Items, {
-        sourceKey: 'optionId',
-        foreignKey: 'optionId'
-      });
-    }
-  }
+  class Options extends Model {}
+  
   Options.init({
     optionId: {
       allowNull: false,
@@ -50,5 +36,4 @@ module.exports = (sequelize, DataTypes) => {
     sequelize,
     modelName: 'Options',
   });
-  return Options;
-};
+  export default Options;

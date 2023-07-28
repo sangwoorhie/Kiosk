@@ -1,40 +1,34 @@
-'use strict';
-const { Model } = require('sequelize');
-module.exports = (sequelize, DataTypes) => {
-  class OrderItems extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
-    static associate(models) {
-      // define association here
+import { Model, DataTypes } from 'sequelize';
+import sequelize from '../sequelize.js'
 
-      // OrderItems모델 - Items모델 : N:1관계
-      this.belongsTo(models.Items, {
-        targetKey: 'itemId',
-        foreignKey: 'itemId'
-      });
-    }
-  }
+export const OrderStatus = { //state 컬럼에 배열로 되어있음
+  ORDERED: 0,
+  PENDING: 1,
+  COMPLETED: 2,
+  CANCELED: 3,
+}
+
+  class OrderItems extends Model {}
+ 
   OrderItems.init({
     orderItemId: {
       allowNull: false,
       autoIncrement: true,
       primaryKey: true,
-      type: DataTypes.INTEGER,
+      type: DataTypes.BIGINT,
     },
     itemId: {
       allowNull: false,
-      type: DataTypes.INTEGER,
+      type: DataTypes.BIGINT,
     },
     amount: {
       allowNull: false,
-      type: DataTypes.INTEGER,
+      type: DataTypes.BIGINT,
+      defaultValue: 0
     },
     state: {
       allowNull: false,
-      type: DataTypes.INTEGER,
+      type: DataTypes.ENUM([OrderStatus.ORDERED, OrderStatus.PENDING, OrderStatus.COMPLETED, OrderStatus.CANCELED])
     },
     createdAt: {
       allowNull: false,
@@ -50,5 +44,5 @@ module.exports = (sequelize, DataTypes) => {
     sequelize,
     modelName: 'OrderItems',
   });
-  return OrderItems;
-};
+
+  export default OrderItems;

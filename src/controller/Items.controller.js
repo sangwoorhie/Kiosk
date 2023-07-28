@@ -11,10 +11,11 @@ class ItemController {
         return res.status(status).json({message});
     }
 
-    // 2. 상품 옵션 추가 
+    // 2. 상품 옵션 추가 ( ItemId, optionId )
     optionItems = async (req, res) => {
+        const { ItemId } = req.params;
         const { extraPrice, shotPrice, hot } = req.body;
-        const { status, message } = await this.itemService.optionItems(extraPrice, shotPrice, hot);
+        const { status, message } = await this.itemService.optionItems(ItemId, extraPrice, shotPrice, hot);
         return res.status(status).json({message});
     } 
 

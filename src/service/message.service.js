@@ -20,14 +20,14 @@ class Message {
     nonexistent() {
         return{
             status: 404,
-            message: `${this.message}이 존재하지 않습니다.`
+            message: `${this.message}이(가) 존재하지 않습니다.`
         }
     }
 
     undefined() {
         return{
             status:400,
-            message: `${this.message}을 입력해주세요.`
+            message: `${this.message}을(를) 입력해주세요.`
         }
     }
 };

@@ -1,41 +1,22 @@
-// 'use strict';
 import { Model, DataTypes } from 'sequelize'
 import sequelize from '../sequelize.js';
-// module.exports = (sequelize, DataTypes) => {
-  class Items extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
-    static associate(models) {
-      // define association here
 
-      // Items모델-Options모델 : N:1관계
-      this.belongsTo(models.Options, {
-        targetKey: 'optionId',
-        foreignKey: 'optionId'
-      });
+export const ItemType = {
+  COFFEE: 'coffee',
+  TEA: 'tea',
+  JUICE: 'juice',
+  DESERT: 'desert',
+  SMOOTHIE: 'smoothie',
+}
 
-      // Items모델-OrderItems모델 : 1:N관계
-      this.hasMany(models.OrderItems, {
-        sourceKey: 'itemId',
-        foreignKey: 'itemId'
-      });
+  class Items extends Model {}
 
-      // Items모델-ItemOrderCustomers모델 : 1:1관계
-      this.hasOne(models.ItemOrderCustomers, {
-        sourceKey: 'itemId',
-        foreignKey: 'itemId'
-      });
-    }
-  }
   Items.init({
     itemId: {
       allowNull: false,
       autoIncrement: true,
       primaryKey: true,
-      type: DataTypes.INTEGER,
+      type: DataTypes.BIGINT,
     },
     optionId: {
       allowNull: false,
@@ -45,6 +26,7 @@ import sequelize from '../sequelize.js';
     name: {
       allowNull: false,
       type: DataTypes.STRING,
+      unique: true
     },
     price: {
       allowNull: false,
@@ -52,8 +34,8 @@ import sequelize from '../sequelize.js';
     },
     type: {
       allowNull: false,
-      type: DataTypes.ENUM,
-      values: ['COFFEE', 'JUICE', 'FOOD']
+      type: DataTypes.ENUM([ItemType.COFFEE, ItemType.DESERT, ItemType.JUICE, ItemType.SMOOTHIE, ItemType.TEA])
+      // values: ['COFFEE', 'TEA', 'JUICE', 'DESERT', 'SMOOTHIE']
     },
     amount: {
       allowNull: false,
@@ -76,6 +58,3 @@ import sequelize from '../sequelize.js';
   });
 
 export default Items;
-
-  // return Items;
-// };
