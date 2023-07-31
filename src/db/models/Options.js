@@ -8,19 +8,22 @@ import sequelize from '../sequelize.js'
       allowNull: false,
       autoIncrement: true,
       primaryKey: true,
-      type: DataTypes.INTEGER,
+      type: DataTypes.BIGINT,
     },
     extraPrice: {
       allowNull: false,
-      type: DataTypes.INTEGER,
+      type: DataTypes.BIGINT,
+      defaultValue: 0,
     },
     shotPrice: {
-      allowNull: false,
-      type: DataTypes.INTEGER,
-    },
-    hot: {
-      allowNull: false,
-      type: DataTypes.INTEGER,
+        allowNull: false,
+        type: DataTypes.BIGINT,
+        defaultValue: 0,
+      },
+    is_hot: { // or ICE
+        allowNull: false,
+        type: DataTypes.BOOLEAN,
+        defaultValue: true,
     },
     createdAt: {
       allowNull: false,
@@ -36,4 +39,5 @@ import sequelize from '../sequelize.js'
     sequelize,
     modelName: 'Options',
   });
+
   export default Options;

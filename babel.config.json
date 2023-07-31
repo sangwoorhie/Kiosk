@@ -1,0 +1,4 @@
+// babel.config.json 설정
+{
+    "presets": ["@babel/preset-env"]
+  }

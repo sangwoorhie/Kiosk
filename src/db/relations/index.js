@@ -1,13 +1,16 @@
-import ItemOrderCustomer from './ItemOrderCustomer.relations.js';
+import Customers from './Customers.relations.js';
 import Items from './Items.relations.js';
+// import Managers from './Managers.relations.js';
 import Options from './Options.relations.js';
-import OrderCustomers from './OrderCustomers.relations.js';
 import OrderItems from './OrderItems.relations.js'
+import Orders from './Orders.relations.js'
+
 
 export default {
-    ItemOrderCustomer,
+    Customers,
     Items,
+    // Managers,
     Options,
-    OrderCustomers,
-    OrderItems
+    OrderItems,
+    Orders,
 };

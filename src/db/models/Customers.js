@@ -1,31 +1,23 @@
 import { Model, DataTypes } from 'sequelize';
 import sequelize from '../sequelize.js'
 
-  class OrderItems extends Model {}
+  class Customers extends Model {}
   
-  OrderItems.init({
-    orderItemId: {
+  Customers.init({
+    customerId: {
       allowNull: false,
       autoIncrement: true,
       primaryKey: true,
       type: DataTypes.BIGINT,
     },
-    orderId: {
+    email: {
       allowNull: false,
       type: DataTypes.BIGINT,
+      unique: true,
     },
-    amount: {
-        allowNull: false,
-        type: DataTypes.BIGINT,
-        defaultValue: 1,
-    },
-    option: {
-        allowNull: false,
-        type: DataTypes.JSON,
-    },
-    price: {
-        allowNull: false,
-        type: DataTypes.NUMBER,
+    password: {
+      allowNull: false,
+      type: DataTypes.STRING,
     },
     createdAt: {
       allowNull: false,
@@ -39,7 +31,7 @@ import sequelize from '../sequelize.js'
     }
   }, {
     sequelize,
-    modelName: 'OrderItems',
+    modelName: 'Customers',
   });
 
-  export default OrderItems;
+  export default Customers;

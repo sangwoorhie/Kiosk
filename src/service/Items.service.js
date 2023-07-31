@@ -1,8 +1,10 @@
 import Message from './message.service.js';
 import { ItemType } from '../db/models/Items.js'
 import ItemRepository from '../repositories/Items.repository.js';
+import { BOOLEAN } from 'sequelize';
 
-// message파일
+
+// message 파일
 const anonymous = new Message('이름');
 const unspecifiedPrice = new Message('가격'); 
 const correctPrice = new Message('알맞은 가격');
@@ -40,6 +42,49 @@ class ItemService {
     }
 
     // 2. 상품 옵션추가
+    optionItems = async (itemId, extraPrice, shotPrice, is_hot) => {
+        const optionadd = new Message('상품 옵션 추가');
+        const addedPrice = new Message('상품의 extra 사이즈 선택시 추가될 요금');
+        const shot = new Message('상품의 shot 추가 선택시 추가될 요금');
+        const exist = new Message('해당 상품');
+
+    try{
+        const checkItem = await this.itemRepository.checkItem(itemId);
+        if(!checkItem){
+            return exist.nonexistent();
+        }
+        else if(!extraPrice){
+            return addedPrice.undefined();
+        } else if (extraPrice == 0){
+            return {
+                status: 400,
+                message: "추가요금이 0원일 경우 선택할 수 없습니다."
+            }
+        } else if (!shotPrice){
+            return shot.undefined();
+        } else if (shotPrice == 0){
+            return {
+                status: 400,
+                message: "추가요금이 0원일 경우 선택할 수 없습니다."
+            }
+        } else if (typeof(is_hot) !== BOOLEAN){
+            return {
+                status: 400,
+                message: "음료 옵션은 hot 또는 cold만 선택 가능합니다."
+            }
+        };
+
+        const option = await this.itemRepository.optionItem(itemId, extraPrice, shotPrice, is_hot);
+        if (option){
+            return optionadd.status200();
+        } else {
+            return optionadd.status400();
+        }
+    }catch(error){
+            console.log(error);
+            return optionadd.status400();
+        }
+    };
 
 
     // 3. 상품 목록조회

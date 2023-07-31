@@ -1,16 +1,8 @@
-import { Model, DataTypes } from 'sequelize'
-import sequelize from '../sequelize.js';
-
-export const ItemType = {
-  COFFEE: 'coffee',
-  TEA: 'tea',
-  JUICE: 'juice',
-  DESERT: 'desert',
-  SMOOTHIE: 'smoothie',
-}
+import { Model, DataTypes } from 'sequelize';
+import sequelize from '../sequelize.js'
 
   class Items extends Model {}
-
+  
   Items.init({
     itemId: {
       allowNull: false,
@@ -24,23 +16,22 @@ export const ItemType = {
       defaultValue: 0
     },
     name: {
-      allowNull: false,
-      type: DataTypes.STRING,
-      unique: true
-    },
+        allowNull: false,
+        type: DataTypes.BIGINT,
+      },
     price: {
-      allowNull: false,
-      type: DataTypes.BIGINT,
+        allowNull: false,
+        type: DataTypes.NUMBER,
     },
     type: {
-      allowNull: false,
-      type: DataTypes.ENUM([ItemType.COFFEE, ItemType.DESERT, ItemType.JUICE, ItemType.SMOOTHIE, ItemType.TEA])
-      // values: ['COFFEE', 'TEA', 'JUICE', 'DESERT', 'SMOOTHIE']
+        allowNull: false,
+        type: DataTypes.ENUM,
+        values: ['coffee', 'tea', 'juice', 'desert', 'smoothie']
     },
     amount: {
-      allowNull: false,
-      type: DataTypes.BIGINT,
-      defaultValue: 0
+        allowNull: false,
+        type: DataTypes.BIGINT,
+        defaultValue: 0
     },
     createdAt: {
       allowNull: false,
@@ -57,4 +48,4 @@ export const ItemType = {
     modelName: 'Items',
   });
 
-export default Items;
+  export default Items;

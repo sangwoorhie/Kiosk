@@ -13,11 +13,12 @@ class ItemController {
 
     // 2. 상품 옵션 추가 ( ItemId, optionId )
     optionItems = async (req, res) => {
-        const { ItemId } = req.params;
-        const { extraPrice, shotPrice, hot } = req.body;
-        const { status, message } = await this.itemService.optionItems(ItemId, extraPrice, shotPrice, hot);
+        const { itemId } = req.params;
+        const { extraPrice, shotPrice, is_hot } = req.body;
+        const { status, message } = await this.itemService.optionItems(itemId, extraPrice, shotPrice, is_hot);
         return res.status(status).json({message});
     } 
+
 
     // 3. 상품 목록 조회 (전체목록조회/타입별조회)
     getItems = async (req, res) => {
@@ -26,6 +27,11 @@ class ItemController {
         return res.status(status).json({message, data})
     }
 
+    // 쿼리로 받아오는법
+    // localhost:3000/api/items?category=all
+    // app.get('/profile', (req, res) => {
+    //     const { name, age, gender } = req.query;
+    //   https://localhost:3000/profile?name=John&age=30&gender=male
 
     // 4. 상품 수정 API : PUT api/items/1
     putItems = async (req, res) => {

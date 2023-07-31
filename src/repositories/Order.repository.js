@@ -1,14 +1,15 @@
-import { OrderItems, OrderStatus } from '../db/models/OrderItems.js'
+import OrderItems from '../db/models/OrderItems.js'
 import Items from '../db/models/Items.js'
+import Orders from '../db/models/Orders.js'
 import { Sequelize, Transaction } from 'sequelize';
 import sequelize from '../db/sequelize.js';
-
        
 
 class OrderRepository{
 
     // 1. 상품 발주 생성
     placeOrder = async (itemId, amount) => {
+        
         const order = await OrderItems.create({itemId, amount});
         return order;
     }
@@ -21,7 +22,7 @@ class OrderRepository{
 
     // 3. 상품 발주 수정
     updateorder = async (orderId, state) => {
-        const update = await OrderItems.update({where: {orderId}}, {state})
+        const update = await Orders.update({where: {orderId}}, {state})
         return update;
     }
 
@@ -36,9 +37,10 @@ class OrderRepository{
         const Trans = await sequelize.transaction({
             isolationLevel: Transaction.ISOLATION_LEVELS.READ_UNCOMMITTED,
         });
+
        try{
         // 발주 업데이트
-        const orderUpdate = OrderItems.update(
+        const orderUpdate = Orders.update(
             { where: { orderId } },
             { state },
             { transaction: Trans }

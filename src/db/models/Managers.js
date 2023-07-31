@@ -1,18 +1,27 @@
 import { Model, DataTypes } from 'sequelize';
 import sequelize from '../sequelize.js'
 
-  class OrderCustomers extends Model {}
+  class Managers extends Model {}
   
-  OrderCustomers.init({
-    orderCustomerId: {
+  Managers.init({
+    ManagerId: {
       allowNull: false,
       autoIncrement: true,
       primaryKey: true,
-      type: DataTypes.INTEGER,
+      type: DataTypes.BIGINT,
     },
-    state: {
+    name: {
       allowNull: false,
-      type: DataTypes.INTEGER,
+      type: DataTypes.BIGINT,
+    },
+    email: {
+      allowNull: false,
+      type: DataTypes.BIGINT,
+      unique: true,
+    },
+    password: {
+      allowNull: false,
+      type: DataTypes.STRING,
     },
     createdAt: {
       allowNull: false,
@@ -26,7 +35,7 @@ import sequelize from '../sequelize.js'
     }
   }, {
     sequelize,
-    modelName: 'OrderCustomers',
+    modelName: 'Managers',
   });
 
-  export default OrderCustomers;
+  export default Managers;
