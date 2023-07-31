@@ -10,10 +10,6 @@ import sequelize from '../sequelize.js'
       primaryKey: true,
       type: DataTypes.BIGINT,
     },
-    name: {
-      allowNull: false,
-      type: DataTypes.BIGINT,
-    },
     email: {
       allowNull: false,
       type: DataTypes.BIGINT,
@@ -21,7 +17,7 @@ import sequelize from '../sequelize.js'
     },
     password: {
       allowNull: false,
-      type: DataTypes.STRING,
+      type: DataTypes.BIGINT,
     },
     createdAt: {
       allowNull: false,

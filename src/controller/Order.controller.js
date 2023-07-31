@@ -6,8 +6,8 @@ class OrdersController {
     // 1. 상품 발주
     addOrders = async (req, res) => {
         const { itemId } = req.params;
-        const { amount } = req.body;
-        const { status, message, order } = await this.orderService.addOrders(itemId, amount);
+        const { amount, option } = req.body;
+        const { status, message, order } = await this.orderService.addOrders(itemId, amount, option);
         return res.status(status).json({message, order});
     }
 

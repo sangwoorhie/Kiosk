@@ -1,13 +1,12 @@
 import OrderItems from '../db/models/OrderItems.js'
 import Items from '../db/models/Items.js'
-import Orders from '../db/models/Orders.js'
 import { Sequelize, Transaction } from 'sequelize';
 import sequelize from '../db/sequelize.js';
        
 
 class OrderRepository{
 
-    // 1. 상품 발주 생성
+    // 1. 상품 주문 생성
     placeOrder = async (itemId, amount) => {
         
         const order = await OrderItems.create({itemId, amount});
@@ -22,7 +21,7 @@ class OrderRepository{
 
     // 3. 상품 발주 수정
     updateorder = async (orderId, state) => {
-        const update = await Orders.update({where: {orderId}}, {state})
+        const update = await OrderItems.update({state}, {where: {orderId}})
         return update;
     }
 
@@ -35,21 +34,22 @@ class OrderRepository{
     // 5. pendingToComplete 트랜젝션 걸어서 발주 업데이트
     pendingToComplete = async(itemId, orderId, state, updatedamount) => {
         const Trans = await sequelize.transaction({
-            isolationLevel: Transaction.ISOLATION_LEVELS.READ_UNCOMMITTED,
+            isolationLevel: Transaction.ISOLATION_LEVELS.READ_COMMITTED,
         });
 
        try{
+        
         // 발주 업데이트
         const orderUpdate = Orders.update(
-            { where: { orderId } },
             { state },
+            { where: { orderId } },
             { transaction: Trans }
         );
 
         // 아이템 업데이트
-        const itemUpdate = Items.update(
-            { where: { itemId } },
+        const itemUpdate = Items.update( // update다음 인자값 순서는 this, values, options.
             { amount: updatedamount },
+            { where: { itemId } },
             { transaction: Trans }
         );
         await Trans.commit();

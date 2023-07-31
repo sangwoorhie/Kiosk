@@ -12,7 +12,7 @@ const receiptsController = new ReceiptsController();
 router.post('/receipts', receiptsController.buy);
 
 
-// 2. 상품 주문 수정 API : PUT localhost:3000/api/receipts/:receiptId
-router.patch('/receipts/:receiptId', receiptsController.edit)
+// 2. 상품 주문 수정 API : PUT localhost:3000/api/receipts/:orderCustomerId
+router.patch('/receipts/:orderCustomerId', receiptsController.edit)
 
 export default router;

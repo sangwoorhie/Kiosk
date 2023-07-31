@@ -15,3 +15,58 @@ const ItemState = {
 };
 
 export default { ItemType, ItemState };
+
+
+// Options
+// optionId
+// extraPrice
+// shotPrice
+// hot
+// createdAt
+// updatedAt
+
+
+// Items
+// itemId
+// optionId
+// price
+// type
+// amount
+// createdAt
+// updatedAt
+
+
+// OrderItems
+// orderItemId
+// itemId
+// amount
+// state
+// createdAt
+// updatedAt
+
+
+// ItemOrderCustomers
+// itemOrderCustomerId
+// itemId
+// orderCustomerId
+// amount
+// option
+// price
+// createdAt
+// updatedAt
+
+
+// OrderCustomers
+// orderCustomerId
+// state
+// createdAt
+// updatedAt
+
+
+// Manager
+// ManagerId
+// email
+// password
+// createdAt
+// updatedAt
+

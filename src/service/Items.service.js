@@ -10,7 +10,7 @@ const unspecifiedPrice = new Message('가격');
 const correctPrice = new Message('알맞은 가격');
 
 class ItemService {
-    itemRepository = new ItemRepository
+    itemRepository = new ItemRepository();
     
 
     // 1. 상품추가
@@ -42,7 +42,7 @@ class ItemService {
     }
 
     // 2. 상품 옵션추가
-    optionItems = async (itemId, extraPrice, shotPrice, is_hot) => {
+    optionItems = async (itemId, extraPrice, shotPrice, hot) => {
         const optionadd = new Message('상품 옵션 추가');
         const addedPrice = new Message('상품의 extra 사이즈 선택시 추가될 요금');
         const shot = new Message('상품의 shot 추가 선택시 추가될 요금');
@@ -67,7 +67,7 @@ class ItemService {
                 status: 400,
                 message: "추가요금이 0원일 경우 선택할 수 없습니다."
             }
-        } else if (typeof(is_hot) !== BOOLEAN){
+        } else if (typeof(hot) !== BOOLEAN){
             return {
                 status: 400,
                 message: "음료 옵션은 hot 또는 cold만 선택 가능합니다."

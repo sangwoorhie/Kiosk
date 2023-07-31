@@ -12,10 +12,10 @@ const undefinedQuantity = new Message('발주 수량');
 const itemstatus = new Message('상품 상태')
 
 class OrderService {
-    orderRepository = new OrderRepository;
+    orderRepository = new OrderRepository();
  
     // 1. 상품 발주 생성
-    addOrders = async (itemId, amount) => {
+    addOrders = async (itemId, amount, option) => {
        const orderItem = new Message('상품 발주');
 
     try{    
@@ -49,12 +49,14 @@ class OrderService {
     }};
     
 
-    // 2. 상품 발주 수정
+    // OrderItems.state
     // ORDERED: 0
     // PENDING: 1
     // COMPLETED: 2
     // CANCELED: 3
-     
+
+
+    // 2. 상품 발주 수정   
     editOrders = async (itemId, orderId, state) => {
         const editstatus = new Message('상품 발주상태 수정');
         try{

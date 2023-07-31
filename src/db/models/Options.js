@@ -1,6 +1,7 @@
 import { Model, DataTypes } from 'sequelize';
 import sequelize from '../sequelize.js'
 
+
   class Options extends Model {}
   
   Options.init({
@@ -13,17 +14,17 @@ import sequelize from '../sequelize.js'
     extraPrice: {
       allowNull: false,
       type: DataTypes.BIGINT,
-      defaultValue: 0,
+      defaultValue: 0
     },
     shotPrice: {
         allowNull: false,
         type: DataTypes.BIGINT,
-        defaultValue: 0,
-      },
-    is_hot: { // or ICE
+        defaultValue: 0
+    },
+    hot: { //or Ice
         allowNull: false,
         type: DataTypes.BOOLEAN,
-        defaultValue: true,
+        defaultValue: false
     },
     createdAt: {
       allowNull: false,

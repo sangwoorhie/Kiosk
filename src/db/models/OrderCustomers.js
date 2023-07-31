@@ -1,28 +1,20 @@
 import { Model, DataTypes } from 'sequelize';
 import sequelize from '../sequelize.js'
 
-  class Orders extends Model {}
+
+  class OrderCustomers extends Model {}
   
-  Orders.init({
-    orderId: {
+  OrderCustomers.init({
+    orderCustomerId: {
       allowNull: false,
       autoIncrement: true,
       primaryKey: true,
       type: DataTypes.BIGINT,
     },
-    customerId: {
-      allowNull: false,
-      type: DataTypes.BIGINT,
-    },
-    is_Customer: {
-        allowNull: false,
-        type: DataTypes.BOOLEAN,
-        defaultValue: 0,
-    },
     state: {
-        allowNull: false,
-        type: DataTypes.ENUM,
-        values: ['ORDERED', 'PENDING', 'COMPLETED', 'CANCELED']
+      allowNull: false,
+      type: DataTypes.BOOLEAN,
+      defaultValue: false
     },
     createdAt: {
       allowNull: false,
@@ -36,7 +28,7 @@ import sequelize from '../sequelize.js'
     }
   }, {
     sequelize,
-    modelName: 'Orders',
+    modelName: 'OrderCustomers',
   });
 
-  export default Orders;
+  export default OrderCustomers;

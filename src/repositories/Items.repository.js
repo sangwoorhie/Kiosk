@@ -23,14 +23,13 @@ class ItemRepository{
 
     // 3-(1) 상품 전체 목록조회
     getAllItems = async () => {
-        const itemlist = await Items.findAll({
-            raw: true,
-            attributes: ['itemId', 'name', 'price', 'type', 'createdAt', 'createdAt'],
-            include: [{model: Options, attributes:[extraPrice, shotPrice, hot]}],
-            order: [['createdAt', 'DESC']]
-        });
+        const itemlist = await Items.findAll();
         return itemlist;
     }
+            // raw: true,
+            // attributes: ['itemId', 'name', 'price', 'type', 'createdAt', 'createdAt'],
+            // include: [{model: Options, attributes:[extraPrice, shotPrice, hot]}],
+            // order: [['createdAt', 'DESC']]
 
     // 3-(2). 상품 타입별 조회
     getCertainItems = async (category) => {

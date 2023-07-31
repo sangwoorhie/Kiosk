@@ -1,6 +1,13 @@
 import { Model, DataTypes } from 'sequelize';
 import sequelize from '../sequelize.js'
 
+const ItemState = {
+  ORDERED: 0,
+  PENDING: 1,
+  COMPLETED: 2,
+  CANCELED: 3,
+};
+
   class OrderItems extends Model {}
   
   OrderItems.init({
@@ -10,22 +17,19 @@ import sequelize from '../sequelize.js'
       primaryKey: true,
       type: DataTypes.BIGINT,
     },
-    orderId: {
+    itemId: {
       allowNull: false,
       type: DataTypes.BIGINT,
     },
     amount: {
         allowNull: false,
         type: DataTypes.BIGINT,
-        defaultValue: 1,
-    },
-    option: {
+        defaultValue: 0
+      },
+    state: {
         allowNull: false,
-        type: DataTypes.JSON,
-    },
-    price: {
-        allowNull: false,
-        type: DataTypes.NUMBER,
+        type: DataTypes.ENUM,
+        values: ['ORDERED', 'PENDING', 'COMPLETED', 'CANCELED']
     },
     createdAt: {
       allowNull: false,

@@ -1,40 +1,35 @@
 import { Model, DataTypes } from 'sequelize';
 import sequelize from '../sequelize.js'
 
-export const ItemType = {
-  COFFEE: 'coffee',
-  TEA: 'tea',
-  JUICE:  'juice',
-  DESERT:  'desert',
-  SMOOTHIE: 'smoothie'
-  }
 
-  class Items extends Model {}
+  class ItemOrderCustomers extends Model {}
   
-  Items.init({
-    itemId: {
+  ItemOrderCustomers.init({
+    itemOrderCustomerId: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: DataTypes.BIGINT,
     },
-    optionId: {
+    itemId: {
         allowNull: false,
         type: DataTypes.BIGINT,
-        defaultValue: 0
     },
-    name: {
+    orderCustomerId: {
         allowNull: false,
-        type: DataTypes.STRING,
-      },
+        type: DataTypes.BIGINT,
+    },
+    amount: {
+        allowNull: false,
+        type: DataTypes.BIGINT,
+    },
+    option: {
+        allowNull: false,
+        type: DataTypes.JSON,
+    },
     price: {
         allowNull: false,
         type: DataTypes.NUMBER,
-    },
-    type: {
-        allowNull: false,
-        type: DataTypes.ENUM,
-        values: ['coffee', 'tea', 'juice', 'desert', 'smoothie']
     },
     amount: {
         allowNull: false,
@@ -53,7 +48,7 @@ export const ItemType = {
     }
   }, {
     sequelize,
-    modelName: 'Items',
+    modelName: 'ItemOrderCustomers',
   });
 
-  export default Items;
+  export default ItemOrderCustomers;
