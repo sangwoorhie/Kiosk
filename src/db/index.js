@@ -12,4 +12,4 @@ Object.values(Relations).forEach(relationsFunction => {
     relationsFunction();
 });
 
-export { sequelize, Options, Items, OrderItems, ItemOrderCustomers, OrderCustomers, Managers };
+export { sequelize, Options, Items, OrderItems, OrderCustomers, ItemOrderCustomers, Managers };

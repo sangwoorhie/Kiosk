@@ -13,7 +13,7 @@ const itemsController = new ItemsController();
 router.post('/items', itemsController.addItems);
 
 // 2. 상품 옵션 추가 API : POST localhost:3000/api/items/:itemId/options
-router.post('/items/:itemId/options', itemsController.optionItems);
+// router.post('/items/:itemId/options', itemsController.optionItems);
 
 // 3. 상품 목록 조회 API : (전체조회/타입별조회) GET localhost:3000/api/items
 router.get('/items', itemsController.getItems);

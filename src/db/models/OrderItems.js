@@ -1,7 +1,7 @@
 import { Model, DataTypes } from 'sequelize';
 import sequelize from '../sequelize.js'
 
-const ItemState = {
+export const orderState = {
   ORDERED: 0,
   PENDING: 1,
   COMPLETED: 2,

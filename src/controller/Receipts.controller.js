@@ -15,7 +15,7 @@ class ReceiptsController {
     edit = async (req, res) => {
         const { orderCustomerId } = req.params;
         const { order } = req.body;
-        const { status, message } = await this.receiptsService.edit(order, orderCustomerId);
+        const { status, message } = await this.receiptsService.edit(orderCustomerId, order);
         return res.status(status).json({ message });
     }
 

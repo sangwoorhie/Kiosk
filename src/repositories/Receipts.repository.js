@@ -1,7 +1,7 @@
 import { OrderCustomers, ItemOrderCustomers, Items, OrderItems } from "../db";
 import { Transaction } from "sequelize";
 import sequelize from "../db/sequelize.js";
-
+import Cache from '../cache/cache.js'
 
 class ReceiptsRepository {
 
@@ -20,7 +20,8 @@ class ReceiptsRepository {
             option,
             price,
         })
-        return order;
+        let options = Cache.get('options')
+        return { order, options };
     }
 
     // 상품찾기
@@ -38,13 +39,13 @@ class ReceiptsRepository {
     // 주문내역상세
     findDetailOrder = async (orderCustomerId) => {
         const findDetailOrder = await ItemOrderCustomers.findAll({
-            where: {orderCustomerId},
+            where: { orderCustomerId },
         })
         return findDetailOrder;
     }
 
 
-    // 주문사항 변경 트랜젝션 적용.
+    // 주문사항 변경 트랜젝션 적용. (return을 1 or 0 으로 함)
     changeState = async (orderCustomerId, id, amount) => {
         const Trans = await sequelize.transaction({
             isolationLevel: Transaction.ISOLATION_LEVELS.READ_COMMITTED
@@ -62,6 +63,7 @@ class ReceiptsRepository {
             );
                 await Trans.commit();
                 return 1;
+
         }catch(error){
             console.log(error);
             await Trans.rollback();
@@ -70,18 +72,24 @@ class ReceiptsRepository {
     };
 
 
-    // 주문 취소
+    // 주문 취소 :  order_customer 데이터, item_order_customer 데이터 트랜잭션 적용해 일괄 삭제
     deleteOrder = async(orderCustomerId) => {
         const Trans = await sequelize.transaction({
             isolationLevel: Transaction.ISOLATION_LEVELS.READ_COMMITTED,
         })
         try{
-            const deleteOrderCustomer = await ItemOrderCustomers.destroy(
-                { where: {orderCustomerId} },
+            const delete1 = await ItemOrderCustomers.destroy(
+                { where: { orderCustomerId } },
                 { transaction: Trans },
-            )
+            );
+
+            const delete2 = await OrderCustomers.destroy(
+                { where: { orderCustomerId  } },
+                { transaction: Trans },
+            );
                 await Trans.commit();
                 return 1;
+                
         }catch(error){
             console.log(error);
             await Trans.rollback();

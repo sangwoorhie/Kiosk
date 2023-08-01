@@ -112,3 +112,4 @@ CRUD
 서버메모리 - 캐시를 사용해서 서버에 램을 저장하는 것.
 앞서 만든 CRUD을 수정
 
+npm install node-cache --save

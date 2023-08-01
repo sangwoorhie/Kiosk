@@ -29,7 +29,7 @@ export const ItemType = {
       },
     price: {
         allowNull: false,
-        type: DataTypes.NUMBER,
+        type: DataTypes.BIGINT,
     },
     type: {
         allowNull: false,

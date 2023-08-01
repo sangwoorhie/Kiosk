@@ -1,7 +1,6 @@
 import Message from './message.service.js';
 import OrderRepository from '../repositories/Order.repository.js'
-// import { ItemType } from '../db/models/Items.js'
-import { OrderStatus } from '../db/models/Orders.js'
+import { orderState } from '../db/models/OrderItems.js'
 
 
 // message 파일
@@ -15,7 +14,7 @@ class OrderService {
     orderRepository = new OrderRepository();
  
     // 1. 상품 발주 생성
-    addOrders = async (itemId, amount, option) => {
+    addOrders = async (itemId, amount) => {
        const orderItem = new Message('상품 발주');
 
     try{    
@@ -68,16 +67,22 @@ class OrderService {
             return unidentifiedorder.undefined();
         } else if (!state){
             return itemstatus.undefined();
-        } else if (!Object.values(OrderStatus).includes(state)){
+        } else if (!Object.values(orderState).includes(state)){
             return {
                 status: 400,
                 message: "정확한 상품 상태를 입력해주세요."
             }
         };
 
+        // 발주할 아이템 유효성
+        const item = await this.orderRepository.checkitems(itemId)
+        if(!item){
+            return noitem.nonexistent();
+        }
+
         // 초기 발주상태 previousState (발주 생성된것에서 찾기) (수정할 발주상태는 req.body에 입력한 state)
         const previousState = await this.orderRepository.checkstatus(itemId, orderId);
-        if(!previousState){
+        if(!previousState.itemId){
             return editstatus.status400();
         }
 
@@ -92,7 +97,7 @@ class OrderService {
         ){ 
         // OrderStatus는 결국 OrdserItem테이블의 state컬럼에 있는 배열임
         // 위 3가지의 경우 발주된 아이템의 상태 업데이트하기
-        const modifiedState = await this.orderRepository.updateorder(orderId, OrderStatus[state]) 
+        const modifiedState = await this.orderRepository.updateorder(orderId, orderState[state]) 
         return editstatus.status200();
         }
         
@@ -107,7 +112,7 @@ class OrderService {
             const updatedamount = item.amount + previousState.amount
 
             // 아이템아이디, 주문아이디, 업데이트된 상태, 업데이트된 수량
-            const pendingToComplete = await this.orderRepository.pendingToComplete(itemId, orderId, OrderStatus[state], updatedamount);
+            const pendingToComplete = await this.orderRepository.pendingToComplete(itemId, orderId, orderState[state], updatedamount);
             if (pendingToComplete.result == 1){
                 return editstatus.status200();
             }
@@ -126,7 +131,7 @@ class OrderService {
             const item = await this.orderRepository.checkitems(itemId);
 
             // 수량 업데이트 = 수정할 발주아이템의 수량 - 초기 발주아이템의 수량
-            const updatedamount = item.amount - previousState.amount
+            const updatedamount = item.amount - previousState.amount;
             if (updatedamount < 0){
                 return {
                     status: 400,

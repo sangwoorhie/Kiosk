@@ -15,13 +15,13 @@ class OrderRepository{
 
     // 2. 발주된 아이템의 상태 찾기
     checkstatus = async (itemId, orderId) => {
-        const status = await OrderItems.findOne({where: {itemId, orderId}});
+        const status = await OrderItems.findOne( {where: {itemId, orderId}} );
         return status;
     } 
 
     // 3. 상품 발주 수정
     updateorder = async (orderId, state) => {
-        const update = await OrderItems.update({state}, {where: {orderId}})
+        const update = await OrderItems.update( {state}, {where: {orderId}} )
         return update;
     }
 
@@ -40,25 +40,27 @@ class OrderRepository{
        try{
         
         // 발주 업데이트
-        const orderUpdate = Orders.update(
+        const orderUpdate = await OrderItems.update(
             { state },
             { where: { orderId } },
             { transaction: Trans }
         );
 
         // 아이템 업데이트
-        const itemUpdate = Items.update( // update다음 인자값 순서는 this, values, options.
+        const itemUpdate = await Items.update( // update다음 인자값 순서는 this, values, options.
             { amount: updatedamount },
             { where: { itemId } },
             { transaction: Trans }
         );
         await Trans.commit();
-        return { result: 1, current: orderUpdate };
+        return 1;
+        // return { result: 1, current: orderUpdate };
 
        }catch(error){
         console.log(error)
         await Trans.rollback();
-        return { return: 0, current: null };
+        return 0;
+        // return { return: 0, current: null };
        }
            
     }

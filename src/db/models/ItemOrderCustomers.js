@@ -29,22 +29,12 @@ import sequelize from '../sequelize.js'
     },
     price: {
         allowNull: false,
-        type: DataTypes.NUMBER,
+        type: DataTypes.INTEGER,
     },
     amount: {
         allowNull: false,
         type: DataTypes.BIGINT,
         defaultValue: 1
-    },
-    createdAt: {
-        allowNull: false,
-        type: DataTypes.DATE,
-        defaultValue: DataTypes.NOW
-    },
-    updatedAt: {
-        allowNull: false,
-        type: DataTypes.DATE,
-        defaultValue: DataTypes.NOW
     }
   }, {
     sequelize,

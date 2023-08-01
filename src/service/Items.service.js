@@ -8,16 +8,19 @@ import { BOOLEAN } from 'sequelize';
 const anonymous = new Message('이름');
 const unspecifiedPrice = new Message('가격'); 
 const correctPrice = new Message('알맞은 가격');
+const opt = new Message('옵션')
 
 class ItemService {
     itemRepository = new ItemRepository();
     
 
     // 1. 상품추가
-    addItems = async (name, price, type) => {
+    addItems = async (name, price, type, optionId) => {
         const add = new Message('상품 추가');
 
         try{
+        const option = await this.itemRepository.findOption(optionId);
+
         if(!name.length){
             return anonymous.undefined(); // Message폴더 함수
         } else if (!price) {
@@ -29,11 +32,15 @@ class ItemService {
                 status: 400,
                 message: "알맞은 타입을 지정해주세요."
             }
-        };
+        } else if (!option){
+            return opt.undefined();
+        }   
 
-        const item = await this.itemRepository.addItems(name, price, type);
-        if(item.name && item.price){
+        const item = await this.itemRepository.addItems(name, price, type, optionId);
+        if(item.name){
             return add.status200(); // Message폴더 함수
+        } else {
+            return add.status400();
         }
         }catch(error){
             console.log(error);
@@ -42,49 +49,49 @@ class ItemService {
     }
 
     // 2. 상품 옵션추가
-    optionItems = async (itemId, extraPrice, shotPrice, hot) => {
-        const optionadd = new Message('상품 옵션 추가');
-        const addedPrice = new Message('상품의 extra 사이즈 선택시 추가될 요금');
-        const shot = new Message('상품의 shot 추가 선택시 추가될 요금');
-        const exist = new Message('해당 상품');
+    // optionItems = async (itemId, extraPrice, shotPrice, hot) => {
+    //     const optionadd = new Message('상품 옵션 추가');
+    //     const addedPrice = new Message('상품의 extra 사이즈 선택시 추가될 요금');
+    //     const shot = new Message('상품의 shot 추가 선택시 추가될 요금');
+    //     const exist = new Message('해당 상품');
 
-    try{
-        const checkItem = await this.itemRepository.checkItem(itemId);
-        if(!checkItem){
-            return exist.nonexistent();
-        }
-        else if(!extraPrice){
-            return addedPrice.undefined();
-        } else if (extraPrice == 0){
-            return {
-                status: 400,
-                message: "추가요금이 0원일 경우 선택할 수 없습니다."
-            }
-        } else if (!shotPrice){
-            return shot.undefined();
-        } else if (shotPrice == 0){
-            return {
-                status: 400,
-                message: "추가요금이 0원일 경우 선택할 수 없습니다."
-            }
-        } else if (typeof(hot) !== BOOLEAN){
-            return {
-                status: 400,
-                message: "음료 옵션은 hot 또는 cold만 선택 가능합니다."
-            }
-        };
+    // try{
+    //     const checkItem = await this.itemRepository.checkItem(itemId);
+    //     if(!checkItem){
+    //         return exist.nonexistent();
+    //     }
+    //     else if(!extraPrice){
+    //         return addedPrice.undefined();
+    //     } else if (extraPrice == 0){
+    //         return {
+    //             status: 400,
+    //             message: "추가요금이 0원일 경우 선택할 수 없습니다."
+    //         }
+    //     } else if (!shotPrice){
+    //         return shot.undefined();
+    //     } else if (shotPrice == 0){
+    //         return {
+    //             status: 400,
+    //             message: "추가요금이 0원일 경우 선택할 수 없습니다."
+    //         }
+    //     } else if (typeof(hot) !== BOOLEAN){
+    //         return {
+    //             status: 400,
+    //             message: "음료 옵션은 hot 또는 cold만 선택 가능합니다."
+    //         }
+    //     };
 
-        const option = await this.itemRepository.optionItem(itemId, extraPrice, shotPrice, is_hot);
-        if (option){
-            return optionadd.status200();
-        } else {
-            return optionadd.status400();
-        }
-    }catch(error){
-            console.log(error);
-            return optionadd.status400();
-        }
-    };
+    //     const option = await this.itemRepository.optionItem(itemId, extraPrice, shotPrice, is_hot);
+    //     if (option){
+    //         return optionadd.status200();
+    //     } else {
+    //         return optionadd.status400();
+    //     }
+    // }catch(error){
+    //         console.log(error);
+    //         return optionadd.status400();
+    //     }
+    // };
 
 
     // 3. 상품 목록조회
@@ -92,20 +99,62 @@ class ItemService {
     const inquire  = new Message('상품 조회');
 
     try{
-        // 전제상품 조회
+        // 전제상품 조회, (option을 확인하기 위해) map함수 2번 돌리고 optionId일치하는지 확인 
         if(category == 'all'){
             const Itemlist = await this.itemRepository.getAllItems();
+            const finalList = Itemlist.Itemlist.map(item => {
+                const option = finalList.result.map(item2 => {
+                    if(item.optionId == item2.optionId){
+                        return item2;
+                    } else {
+                        return null;
+                    }
+                }).filter(item3 => item3 !== null);
+                return {
+                    itemId: item.itemId,
+                    optionId: item.optionId,
+                    name: item.name,
+                    price: item.price,
+                    type: item.type,
+                    amount: item.amount,
+                    createdAt: item.createdAt,
+                    updatedAt: item.updatedAt,
+                    option: option
+                }
+            });
             return {
                 status: 200,
                 message: '전체 상품이 조회되었습니다.',
-                data: Itemlist
+                data: finalList // Itemlist
             }
-        } else { // 타입별 상품조회
+
+        // 타입별 상품조회
+        } else { 
             const categorizedItems = await this.itemRepository.getCertainItems(category);
+            const fianlList = categorizedItems.categorizedItems.map(item => {
+                const option = categorizedItems.result.map(item2 => {
+                    if(item.optionId == item2.optionId){
+                        return item2;
+                    } else {
+                        return null;
+                    }
+                }).filter(item3 => item3 !== null);
+                return {
+                    itemId: item.itemId,
+                    optionId: item.optionId,
+                    name: item.name,
+                    price: item.price,
+                    type: item.type,
+                    amount: item.amount,
+                    createdAt: item.createdAt,
+                    updatedAt: item.updatedAt,
+                    option: option
+                }
+            })
             return {
                 status: 200,
                 message: `${category} 타입의 상품이 조회되었습니다.`,
-                data: categorizedItems
+                data: fianlList
             }
         }
         }catch(error){
@@ -118,9 +167,13 @@ class ItemService {
     // 4. 상품 수정
     putItems = async (itemId, name, price) => {
         const edit = new Message('상품 수정');
+        const ID = new Message('상품 ID')
+        const checkItem = await this.itemRepository.checkItem(itemId);
     
     try{
-        if(!name.length){
+        if(!checkItem){
+            return ID.undefined();
+        } else if(!name.length){
             return anonymous.undefined();
         } else if (!price){
             return unspecifiedPrice.undefined();
@@ -182,7 +235,7 @@ class ItemService {
     }};
 
 
-}
+};
 
 
 export default ItemService;

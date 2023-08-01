@@ -6,18 +6,18 @@ class ItemController {
 
     // 1. 상품추가
     addItems = async (req, res) => {
-        const { name, price, type } = req.body;
-        const { status, message } = await this.itemService.addItems(name, price, type);
+        const { name, price, type, optionId } = req.body;
+        const { status, message } = await this.itemService.addItems(name, price, type, optionId);
         return res.status(status).json({message});
     }
 
-    // 2. 상품 옵션 추가 ( ItemId, optionId )
-    optionItems = async (req, res) => {
-        const { itemId } = req.params;
-        const { extraPrice, shotPrice, is_hot } = req.body;
-        const { status, message } = await this.itemService.optionItems(itemId, extraPrice, shotPrice, is_hot);
-        return res.status(status).json({message});
-    } 
+    // // 2. 상품 옵션 추가 ( ItemId, optionId )
+    // optionItems = async (req, res) => {
+    //     const { itemId } = req.params;
+    //     const { extraPrice, shotPrice, is_hot } = req.body;
+    //     const { status, message } = await this.itemService.optionItems(itemId, extraPrice, shotPrice, is_hot);
+    //     return res.status(status).json({message});
+    // } 
 
 
     // 3. 상품 목록 조회 (전체목록조회/타입별조회)
