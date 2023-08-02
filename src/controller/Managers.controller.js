@@ -2,7 +2,7 @@
 // // import JWT from 'jsonwebtoken';
 
 
-// class ManagerController {
+// export class ManagerController {
 //     managerService = new ManagerService()
 
 

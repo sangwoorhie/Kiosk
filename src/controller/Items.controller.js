@@ -29,6 +29,7 @@ class ItemController {
 
     // 쿼리로 받아오는법
     // localhost:3000/api/items?category=all
+    
     // app.get('/profile', (req, res) => {
     //     const { name, age, gender } = req.query;
     //   https://localhost:3000/profile?name=John&age=30&gender=male

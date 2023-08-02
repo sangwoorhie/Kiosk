@@ -1,5 +1,7 @@
 import Message from './message.service.js';
 import ReceiptsRepository from '../repositories/Receipts.repository.js';
+import Cache from '../cache/cache.js'
+
 
 const orderItem = new Message('상품 주문');
 const ID = new Message('해당 상품의 ID');
@@ -48,21 +50,18 @@ buy = async (order) => {
                 price * amount, // findItem.price * amount
             );
 
-
         // 위에서 찾은 findItem의 optionId가, orderlog를 map으로 돌려서 나온 것들 중 하나의 optionId와 일치할때
-        const optionDetail = orderlog.options.map(op => {
-            if(findItem.optionId == op.optionId){
-                return op;
-            } else {
-                return null;
-            }
-        }).filter(item => item !== null);
+        const optionId = findItem.optionId
+        console.log("optionId:",optionId)
+        let options = Cache.get(optionId)
+        console.log("options:",options)
+
 
 
         // optionDetail은 orderlog를 map함수로 돌렸으므로 배열형태.
         const optionPrice = 
-        optionDetail[0].extraPrice * option.extraPrice +
-        optionDetail[0].shotPrice * option.shotPrice;
+        options.extraPrice * option.extraPrice +
+        options.shotPrice * option.shotPrice;
 
         totalPrice = totalPrice + price * amount + optionPrice;
    

@@ -15,3 +15,9 @@ class OptionsController {
 }
 
 export default OptionsController;
+
+// {
+//     "extraPrice":"",
+//     "shotPrice":"",
+//     "hot":""
+// }

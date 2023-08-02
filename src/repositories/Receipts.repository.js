@@ -1,7 +1,6 @@
 import { OrderCustomers, ItemOrderCustomers, Items, OrderItems } from "../db";
 import { Transaction } from "sequelize";
 import sequelize from "../db/sequelize.js";
-import Cache from '../cache/cache.js'
 
 class ReceiptsRepository {
 
@@ -20,8 +19,7 @@ class ReceiptsRepository {
             option,
             price,
         })
-        let options = Cache.get('options')
-        return { order, options };
+        return { order };
     }
 
     // 상품찾기

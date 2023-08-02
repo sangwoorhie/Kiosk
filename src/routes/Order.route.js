@@ -13,8 +13,8 @@ const ordersController = new OrdersController();
 router.post('/items/:itemId/orders', ordersController.addOrders)
 
 
-// 2. 상품 발주 수정 API : PUT localhost:3000/api/items/:itemId/order/:orderId
-router.put('/items/:itemId/order/:orderId', ordersController.editOrders)
+// 2. 상품 발주 수정 API : PATCH localhost:3000/api/items/:itemId/order/:orderItemId
+router.patch('/items/:itemId/order/:orderItemId', ordersController.editOrders)
 
 
 export default router;

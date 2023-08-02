@@ -2,7 +2,6 @@ import Message from './message.service.js';
 import OrderRepository from '../repositories/Order.repository.js'
 import { orderState } from '../db/models/OrderItems.js'
 
-
 // message 파일
 const noitem = new Message('상품');
 const unidentifieditem = new Message('상품 ID');
@@ -14,7 +13,7 @@ class OrderService {
     orderRepository = new OrderRepository();
  
     // 1. 상품 발주 생성
-    addOrders = async (itemId, amount) => {
+    addOrders = async (itemId, amount, state) => {
        const orderItem = new Message('상품 발주');
 
     try{    
@@ -23,6 +22,8 @@ class OrderService {
             return unidentifieditem.undefined();
         } else if (!amount){
             return undefinedQuantity.undefined();
+        } else if (!state){
+            return itemstatus.undefined();
         }
 
     // 발주할 아이템 유효성
@@ -32,7 +33,7 @@ class OrderService {
         }
 
     // 발주 생성
-    const order = await this.orderRepository.placeOrder(itemId, amount);
+    const order = await this.orderRepository.placeOrder(itemId, amount, state);
     if (order){
         return {
             status: 200,
@@ -56,14 +57,14 @@ class OrderService {
 
 
     // 2. 상품 발주 수정   
-    editOrders = async (itemId, orderId, state) => {
+    editOrders = async (itemId, orderItemId, state) => {
         const editstatus = new Message('상품 발주상태 수정');
         try{
 
         // 유효성 검사
         if(!itemId){
             return unidentifieditem.undefined();
-        } else if (!orderId){
+        } else if (!orderItemId){
             return unidentifiedorder.undefined();
         } else if (!state){
             return itemstatus.undefined();
@@ -81,7 +82,7 @@ class OrderService {
         }
 
         // 초기 발주상태 previousState (발주 생성된것에서 찾기) (수정할 발주상태는 req.body에 입력한 state)
-        const previousState = await this.orderRepository.checkstatus(itemId, orderId);
+        const previousState = await this.orderRepository.checkstatus(itemId, orderItemId);
         if(!previousState.itemId){
             return editstatus.status400();
         }
@@ -97,7 +98,7 @@ class OrderService {
         ){ 
         // OrderStatus는 결국 OrdserItem테이블의 state컬럼에 있는 배열임
         // 위 3가지의 경우 발주된 아이템의 상태 업데이트하기
-        const modifiedState = await this.orderRepository.updateorder(orderId, orderState[state]) 
+        const modifiedState = await this.orderRepository.updateorder(orderItemId, orderState[state]) 
         return editstatus.status200();
         }
         
@@ -112,7 +113,7 @@ class OrderService {
             const updatedamount = item.amount + previousState.amount
 
             // 아이템아이디, 주문아이디, 업데이트된 상태, 업데이트된 수량
-            const pendingToComplete = await this.orderRepository.pendingToComplete(itemId, orderId, orderState[state], updatedamount);
+            const pendingToComplete = await this.orderRepository.pendingToComplete(itemId, orderItemId, orderState[state], updatedamount);
             if (pendingToComplete.result == 1){
                 return editstatus.status200();
             }
@@ -140,7 +141,7 @@ class OrderService {
             }
 
             // 아이템아이디, 주문아이디, 업데이트된 상태, 업데이트된 수량
-            const pendingToComplete = await this.orderRepository.pendingToComplete(itemId, orderId, OrderStatus[state], updatedamount);
+            const pendingToComplete = await this.orderRepository.pendingToComplete(itemId, orderItemId, orderState[state], updatedamount);
             if(pendingToComplete.result == 1){
                 return editstatus.status200();
             }else{

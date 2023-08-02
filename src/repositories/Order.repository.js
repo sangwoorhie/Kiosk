@@ -7,21 +7,21 @@ import sequelize from '../db/sequelize.js';
 class OrderRepository{
 
     // 1. 상품 주문 생성
-    placeOrder = async (itemId, amount) => {
+    placeOrder = async (itemId, amount, state) => {
         
-        const order = await OrderItems.create({itemId, amount});
+        const order = await OrderItems.create({itemId, amount, state});
         return order;
     }
 
     // 2. 발주된 아이템의 상태 찾기
-    checkstatus = async (itemId, orderId) => {
-        const status = await OrderItems.findOne( {where: {itemId, orderId}} );
+    checkstatus = async (itemId, orderItemId) => {
+        const status = await OrderItems.findOne( {where: {itemId, orderItemId}} );
         return status;
     } 
 
     // 3. 상품 발주 수정
-    updateorder = async (orderId, state) => {
-        const update = await OrderItems.update( {state}, {where: {orderId}} )
+    updateorder = async (orderItemId, state) => {
+        const update = await OrderItems.update( {state}, {where: {orderItemId}} )
         return update;
     }
 
@@ -32,7 +32,7 @@ class OrderRepository{
     }
 
     // 5. pendingToComplete 트랜젝션 걸어서 발주 업데이트
-    pendingToComplete = async(itemId, orderId, state, updatedamount) => {
+    pendingToComplete = async(itemId, orderItemId, state, updatedamount) => {
         const Trans = await sequelize.transaction({
             isolationLevel: Transaction.ISOLATION_LEVELS.READ_COMMITTED,
         });
@@ -42,7 +42,7 @@ class OrderRepository{
         // 발주 업데이트
         const orderUpdate = await OrderItems.update(
             { state },
-            { where: { orderId } },
+            { where: { orderItemId } },
             { transaction: Trans }
         );
 
