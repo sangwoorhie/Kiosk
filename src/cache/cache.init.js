@@ -8,7 +8,7 @@ class CacheInit {
     // 백틱안의 option은 forEach에 쓰인 option
     cacheinit = async () => {
         const options = await this.optionsRepository.getOptions();
-        console.log("options:",options)
+        // console.log("options:",options)
         options.forEach(option => {
             const success = Cache.set(`${option.optionId}`, option, 10000)
         if(!success){

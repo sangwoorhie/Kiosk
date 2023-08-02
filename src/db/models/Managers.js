@@ -19,6 +19,9 @@ import sequelize from '../sequelize.js'
       allowNull: false,
       type: DataTypes.BIGINT,
     },
+    token: {
+      type: DataTypes.BIGINT,
+    },
     createdAt: {
       allowNull: false,
       type: DataTypes.DATE,

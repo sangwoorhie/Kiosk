@@ -1,12 +1,6 @@
 import { Model, DataTypes } from 'sequelize';
 import sequelize from '../sequelize.js'
 
-export const orderState = {
-  "ORDERED": 0,
-  "PENDING": 1,
-  "COMPLETED": 2,
-  "CANCELED": 3,
-};
 
   class OrderItems extends Model {}
   
@@ -28,7 +22,7 @@ export const orderState = {
       },
     state: {
         allowNull: false,
-        type: DataTypes.ENUM,
+        type: DataTypes.BIGINT,
         values: ['ORDERED', 'PENDING', 'COMPLETED', 'CANCELED']
     },
     createdAt: {

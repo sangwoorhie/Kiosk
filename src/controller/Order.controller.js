@@ -16,7 +16,7 @@ class OrdersController {
         const { itemId, orderItemId } = req.params;
         const { state } = req.body;
         const { status, message } = await this.orderService.editOrders(itemId, orderItemId, state);
-        return res.status(status).json({message});
+        return res.status(status).json({message})
     }
 
 }
