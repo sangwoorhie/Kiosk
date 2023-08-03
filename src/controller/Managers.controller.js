@@ -23,18 +23,19 @@ signup = async (req, res) => {
 login = async (req, res) => {
     const existToken = req.cookies.RefreshToken;
     const { email, password } = req.body;
-    const { status, message, accesscookie, refreshcookie } = await this.managerService.login(email, password, existToken); 
-    // AccessToken, RefreshToken
+    const { status, message, AccessToken, RefreshToken } = await this.managerService.login(email, password, existToken); 
     
-    res.cookie(accesscookie.name, accesscookie.token, { 
-        expiresIn: accesscookie.expiresIn
-    });
-    res.cookie(refreshcookie.name, refreshcookie.token, {
-        expiresIn: refreshcookie.expiresIn,
-    });
+    res.cookie("AccessToken", `Bearer ${AccessToken}`);
+    res.cookie("RefreshToken", `Bearer ${RefreshToken}`);
 
-    // res.cookie("AccessToken", `Bearer ${AccessToken}`);
-    // res.cookie("RefreshToken", `Bearer ${RefreshToken}`);
+    // res.cookie(accesscookie.name, accesscookie.token, { 
+    //     expiresIn: accesscookie.expiresIn
+    // });
+    // res.cookie(refreshcookie.name, refreshcookie.token, {
+    //     expiresIn: refreshcookie.expiresIn,
+    // });
+
+
     return res.status(status).json({message});
 }
 

@@ -9,41 +9,70 @@ https://teamsparta.notion.site/Node-js-Lv5-3438e66dadcd468bba12bbdbf0933d34
 2. DB로 상품의 재고를 관리한다.
 3. 서버 메모리 캐시로 데이터의 옵션을 관리한다.
 
-items
+[1] Items
 
-상품 추가 API  
+1. 상품 추가 API  
 POST api/items
 
-상품 옵션 추가 API
-POST api/items/options
-
-상품 조회 API 
+2. 상품 조회 API (전체목록조회 / 카테고리별 조회)
 GET api/items
 
-상품 삭제 API 
-DELETE api/items/1
+3. 상품 수정 API 
+PATCH api/items/:itemId
 
-상품 수정 API 
-PATCH api/items/1
+4. 상품 삭제 API 1차
+DELETE api/items/:itemId
 
-
-
-orders
-
-상품 발주 API
-POST api/orders
-
-발주 상태 수정 API
-PATCH api/orders/1
+5. 상품 삭제 API 2차
+DELETE api/response/items/:itemId
 
 
-receipts
 
-상품 주문 API
+[2] Orders
+
+1. 상품 발주 생성 API
+POST api/items/:itemId/orders
+
+2. 발주 상태 수정 API
+PATCH api/items/:itemId/order/:orderItemId
+
+
+[3] Receipts
+
+1. 상품 주문 생성 API
 POST api/receipts
 
-상품 주문 수정 API
-PATCH api/receipts/1
+2. 상품 주문 수정 API
+PATCH api/receipts/:orderCustomerId
+
+
+[4] Options
+
+1. 옵션추가
+2. 옵션수정
+3. 옵션삭제
+
+
+[5] Managers
+
+1. 회원가입 API
+POST api/manager/signup
+
+2. 로그인 API
+POST api/manager/login
+
+3. 로그아웃 API
+POST api/manager/logout
+
+4. 회원정보조회 API
+GET api/manager/:ManagerId
+
+5. 회원정보수정 API
+PATCH api/manager/:ManagerId
+
+6. 회원탈퇴 API
+DELETE api/manager/:ManagerId
+
 -------------------------------------------------------------
 
 필수기능

@@ -2,6 +2,7 @@ import Message from './message.service.js';
 import { ItemType } from '../db/models/Items.js'
 import ItemRepository from '../repositories/Items.repository.js';
 import { BOOLEAN } from 'sequelize';
+import Cache from '../cache/cache.js'
 
 
 // message 파일
@@ -99,62 +100,32 @@ class ItemService {
     const inquire  = new Message('상품 조회');
 
     try{
-        // 전제상품 조회, (option을 확인하기 위해) map함수 2번 돌리고 optionId일치하는지 확인 
+        // 전제상품 조회, Cache; 
         if(category == 'all'){
             const Itemlist = await this.itemRepository.getAllItems();
-            const finalList = Itemlist.Itemlist.map(item => {
-                const option = finalList.result.map(item2 => {
-                    if(item.optionId == item2.optionId){
-                        return item2;
-                    } else {
-                        return null;
-                    }
-                }).filter(item3 => item3 !== null);
-                return {
-                    itemId: item.itemId,
-                    optionId: item.optionId,
-                    name: item.name,
-                    price: item.price,
-                    type: item.type,
-                    amount: item.amount,
-                    createdAt: item.createdAt,
-                    updatedAt: item.updatedAt,
-                    option: option
-                }
-            });
+            const list = Itemlist.map(item => {
+                const option = Cache.get(`option_${item.optionId}`);
+                item.option = option
+                return item;
+            })
             return {
                 status: 200,
                 message: '전체 상품이 조회되었습니다.',
-                data: finalList // Itemlist
+                data: list
             }
 
         // 타입별 상품조회
         } else { 
             const categorizedItems = await this.itemRepository.getCertainItems(category);
-            const fianlList = categorizedItems.categorizedItems.map(item => {
-                const option = categorizedItems.result.map(item2 => {
-                    if(item.optionId == item2.optionId){
-                        return item2;
-                    } else {
-                        return null;
-                    }
-                }).filter(item3 => item3 !== null);
-                return {
-                    itemId: item.itemId,
-                    optionId: item.optionId,
-                    name: item.name,
-                    price: item.price,
-                    type: item.type,
-                    amount: item.amount,
-                    createdAt: item.createdAt,
-                    updatedAt: item.updatedAt,
-                    option: option
-                }
+            const list = categorizedItems.map(item => {
+                const option = Cache.get(`option_${item.optionId}`);
+                item.option = option;
+                return item;
             })
             return {
                 status: 200,
                 message: `${category} 타입의 상품이 조회되었습니다.`,
-                data: fianlList
+                data: list
             }
         }
         }catch(error){
@@ -167,7 +138,7 @@ class ItemService {
     // 4. 상품 수정
     putItems = async (itemId, name, price) => {
         const edit = new Message('상품 수정');
-        const ID = new Message('상품 ID')
+        const ID = new Message('상품 ID');
         const checkItem = await this.itemRepository.checkItem(itemId);
     
     try{
@@ -195,11 +166,18 @@ class ItemService {
 
     // 5. 상품 삭제 확인 1
     deleteItems = async (itemId) => {
+        const item = new Message('상품')
         const getRidOf = new Message('상품 삭제');
 
     try{
         const checkItem = await this.itemRepository.checkItem(itemId);
+        if(!checkItem){
+            return item.nonexistent();
+        }
+        
         if(checkItem.amount > 0){ // 상품수량 있는경우 - 질문, API2로 넘어감
+        // 질문 2로 넘어가는 경우 캐시에 해당 아이템의 아이디를 저장
+        Cache.set(`deleteItems${itemId}`, itemId, 10000);
             return {
                 status: 200,
                 message: '현재 수량이 남아있습니다. 삭제하시겠습니까? (예 또는 아니오로 답변해주세요.)'
@@ -218,15 +196,24 @@ class ItemService {
 
     // 6. 상품 삭제 확인 2 
     answerRemoveItems = async(itemId, answer) => {
+        const item = new Message('상품')
         const getRidOf = new Message('상품 삭제');
 
     try{
-        if(answer == "예"){ // 대답이 "예"인 경우
+        const checkItem = await this.itemRepository.checkItem(itemId);
+        if(!checkItem){
+            return item.nonexistent();
+        }
+
+        // 상품 삭제 확인 1에서 저장된 Cache 가져오기
+        const removeId = Cache.get(`deleteItems${itemId}`);
+
+        if(answer == "예" && itemId == removeId){ // 대답이 "예"이고, 아이디가 첫번째 삭제API의 캐시에 저장된 itemId와 동일한 경우
             const removeItem = await this.itemRepository.deleteItems(itemId);
             if(removeItem){
                 return getRidOf.status200();
             }
-        } else { // 반대의 경우 유지.
+        } else if (answer == "아니오" || !answer) { // 반대의 경우 유지.
             return getRidOf.status400();
         }
     }catch(error){

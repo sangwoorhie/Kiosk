@@ -11,6 +11,28 @@ class OptionsController {
         return res.status(status).json({message});
     }
 
+    // 2. 옵션 수정
+    editOption = async (req, res) => {
+        const { optionId } = req.params;
+        const { extraPrice, shotPrice, hot } = req.body;
+        const { status, message } = await this.optionsService.editOption(optionId, extraPrice, shotPrice, hot)
+        return res.status(status).json({message});
+    }
+
+    // 3. 옵션 삭제 1차
+    deleteOption = async (req, res) => {
+        const { optionId } = req.params;
+        const { status, message } = await this.optionsService.deleteOption(optionId);
+        return res.status(status).json({message});
+    } 
+
+    // 4. 옵션 삭제 2차
+    answerRemoveOption = async (req, res) => {
+        const { optionId } = req.params;
+        const { answer } = req.body;
+        const { status, message } = await this.optionService.answerRemoveOption(optionId, answer);
+        return res.status(status).json({message});
+    }
 
 }
 

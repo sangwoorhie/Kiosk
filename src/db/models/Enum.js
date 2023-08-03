@@ -8,13 +8,13 @@ const ItemType = {
 
 
 const ItemState = {
-    ORDERED: 0,
-    PENDING: 1,
-    COMPLETED: 2,
-    CANCELED: 3,
+    ORDERED: "0",
+    PENDING: "1",
+    COMPLETED: "2",
+    CANCELED: "3",
 };
 
-export default { ItemType, ItemState };
+export { ItemType, ItemState };
 
 
 // Options

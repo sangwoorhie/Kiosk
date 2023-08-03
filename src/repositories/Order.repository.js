@@ -6,7 +6,7 @@ import sequelize from '../db/sequelize.js';
 
 class OrderRepository{
 
-    // 1. 상품 주문 생성
+    // 1. 상품 발주 생성
     placeOrder = async (itemId, amount, state) => {
         
         const order = await OrderItems.create({itemId, amount, state});

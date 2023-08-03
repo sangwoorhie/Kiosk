@@ -93,7 +93,8 @@ class ManagerService {
             const info = new Message('회원정보')
             
             // 이메일로 매니저계정 찾기
-            const data = await this.managerRepository.login(email);
+        try{
+            const data = await this.managerRepository.findByEmail(email);
             
             // 유효성 검사
             if(!email){
@@ -104,71 +105,118 @@ class ManagerService {
                 return info.nonexistent();
             }
 
-            const ID = data.ManagerId;
-            const [ authType, authToken ] = (existToken ?? "").split(" ");
-            const accessToken = JWT.sign({ ID }, secretKey, {
-                expiresIn: '7d',
-            });
-
-            const refreshToken = JWT.sign({}, reSecretKey, {
-                expiresIn: '7d',
-            });
-
-            class Returns {
-                constructor() {}
-                status201() {
-                    return {
-                        status: 201,
-                        accesscookie: {
-                            name: 'accessToken',
-                            token: `Bearer ${accessToken}`,
-                            expiresIn: 3600,
-                        },
-                        refreshcookie: {
-                            name: 'refreshToken',
-                            token: `Bearer ${refreshToken}`,
-                            expiresIn: '7d',
-                        },
-                        message: "로그인에 성공하였습니다."
-                    }
-                };
-                status400() {
-                    return {
-                        status: 400,
-                        accesscookie: null,
-                        refreshcookie: null,
-                        message: "로그인에 실패하였습니다."
-                    }
-                }
-            };
-
-            const status = new Returns();
-            try{
-            // 해쉬된 패스워드가 새로 입력한 패스워드와 동일하면 true, 아니면 false
-            const match = await bcrypt.compare(password, data.password);
-                if(!match){
-                    return log.status400();
-                } else if (existToken){
-                    const verified = JWT.verify(authToken, reSecretKey);
-                    if (data.token == authToken && verified){
-                        return log.status200();
-                    } else if (data.token !== authToken || !verified){
-                        return log.status200();
-                    } else if (authType !== 'Bearer' || !authToken){
-                        return log.status400();
-                    }
-                } else if (authType !== 'Bearer' || !authToken){
-                    return log.status400();
-                } else if (!existToken){
-                    await this.managerRepository.updateToken(email, refreshToken);
-                    return log.status200();
-                }
-            }catch(error){
-                console.log(error);
-                return log.status400();
+            const manager = {
+                ManagerId: data.ManagerId,
+                email: data.email,
+                password: data.password,
             }
 
-        } 
+            // 쿠키발급
+            const AccessToken = JWT.sign({ManagerId: manager.ManagerId}, JWT_KEY);
+            const RefreshToken = JWT.sign({ ManagerId: manager.ManagerId }, JWT_KEY);
+
+            // TokenType에는 Bearer가 담기고, Token에는 existRefreshToken이 담김.
+            const [ TokenType, Token ] = ( existToken ?? "").split(" ");
+            const verified = JWT.verify(Token, JWT_KEY);
+
+            // cookie에 existRefreshToken, 즉 Token이 존재하고, 그게 DB와 일치하면서(data.token) + 구조분해한 할당한 토큰(Token)을 JWT키로 인증한 결과가 존재할때(true)일때
+            if(Token == data.token && verified){
+                return{
+                    status: 200,
+                    message: "로그인이 완료되었습니다.",
+                    AccessToken: AccessToken,
+                    RefreshToken: RefreshToken,
+                }
+            }
+            
+            // 1. refresh토큰이 없는 경우 토큰 재발급 (AccessToken토큰은 기본으로 있음)
+
+            // 2. A가 로그인을 하고 로그아웃을 안 한 상태로 B가 같은 클라이언트에서 로그인 하면
+            // A가 갖고 있던 refresh token이 쿠키에 남아있는다.
+            // 이런 경우 refresh token이 일치하지는 않으므로 다시 refresh 토큰을 발급하여 넣어준다.
+            // 쿠키에 있는 토큰이랑, 서버(DB)에 있는 토큰이랑 불일치
+        
+            // 3. 쿠키에 있는 토큰이랑, 서버(DB)에 있는 토큰이랑 일치하지만, 만료기간이 지나서 verified가 안되는 경우
+
+            if(!existToken || Token !== data.token || (Token == data.token && !verified)){
+                await this.managerRepository.saveToken(email, RefreshToken);
+                return {
+                    status: 200,
+                    message: "로그인이 완료되었습니다.",
+                    AccessToken: AccessToken,
+                    RefreshToken: RefreshToken,
+                }
+            }
+        }catch(error){
+            console.log(error);
+            return log.status400();
+        }
+        }; 
+            // const ID = data.ManagerId;
+            // const [ authType, authToken ] = (existToken ?? "").split(" ");
+            // const accessToken = JWT.sign({ ID }, secretKey, {
+            //     expiresIn: '7d',
+            // });
+
+            // const refreshToken = JWT.sign({}, reSecretKey, {
+            //     expiresIn: '7d',
+            // });
+
+            // class Returns {
+            //     constructor() {}
+            //     status201() {
+            //         return {
+            //             status: 201,
+            //             accesscookie: {
+            //                 name: 'accessToken',
+            //                 token: `Bearer ${accessToken}`,
+            //                 expiresIn: 3600,
+            //             },
+            //             refreshcookie: {
+            //                 name: 'refreshToken',
+            //                 token: `Bearer ${refreshToken}`,
+            //                 expiresIn: '7d',
+            //             },
+            //             message: "로그인에 성공하였습니다."
+            //         }
+            //     };
+            //     status400() {
+            //         return {
+            //             status: 400,
+            //             accesscookie: null,
+            //             refreshcookie: null,
+            //             message: "로그인에 실패하였습니다."
+            //         }
+            //     }
+            // };
+
+            // const status = new Returns();
+            // try{
+            // // 해쉬된 패스워드가 새로 입력한 패스워드와 동일하면 true, 아니면 false
+            // const match = await bcrypt.compare(password, data.password);
+            //     if(!match){
+            //         return log.status400();
+            //     } else if (existToken){
+            //         const verified = JWT.verify(authToken, reSecretKey);
+            //         if (data.token == authToken && verified){
+            //             return log.status200();
+            //         } else if (data.token !== authToken || !verified){
+            //             return log.status200();
+            //         } else if (authType !== 'Bearer' || !authToken){
+            //             return log.status400();
+            //         }
+            //     } else if (authType !== 'Bearer' || !authToken){
+            //         return log.status400();
+            //     } else if (!existToken){
+            //         await this.managerRepository.updateToken(email, refreshToken);
+            //         return log.status200();
+            //     }
+            // }catch(error){
+            //     console.log(error);
+            //     return log.status400();
+            // }
+
+
 
     // 3. 회원정보 조회
     info = async (ManagerId) => {

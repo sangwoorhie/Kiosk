@@ -18,7 +18,7 @@ class CacheInit {
     }
 }
 
-export default CacheInit;
+export default CacheInit; // 서버메모리에 저장하는게 뭔지, 캐시
 
 // set<T>(
 //     key: Key,

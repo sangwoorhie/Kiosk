@@ -13,16 +13,16 @@ class ManagerRepository{
         return create;
     }
 
-    // 2. 로그인
-    login = async (email) => {
+    // 2. 이메일 찾기
+    findByEmail = async (email) => {
         const data = await Manager.findOne({ where: {email} })
         return data;
     }
 
     // 3. 토큰 업데이트
-    updateToken = async (email, refreshToken) => {
+    saveToken = async (email, RefreshToken) => {
         const updated = await Manager.update(
-            { token: refreshToken },
+            { token: RefreshToken },
             { where: { email } }
         );
         return updated;

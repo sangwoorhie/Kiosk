@@ -1,6 +1,8 @@
 import { Model, DataTypes } from 'sequelize';
 import sequelize from '../sequelize.js'
 
+import { ItemState } from './Enum.js'
+console.log("ItemState:", ItemState)
 
   class OrderItems extends Model {}
   
@@ -22,8 +24,9 @@ import sequelize from '../sequelize.js'
       },
     state: {
         allowNull: false,
-        type: DataTypes.BIGINT,
-        values: ['ORDERED', 'PENDING', 'COMPLETED', 'CANCELED']
+        type: DataTypes.ENUM(Object.values(ItemState))
+        // type: DataTypes.ENUM([ItemState.ORDERED, ItemState.PENDING, ItemState.COMPLETED, ItemState.CANCELED]),
+        // values: [0, 1, 2, 3]
     },
     createdAt: {
       allowNull: false,

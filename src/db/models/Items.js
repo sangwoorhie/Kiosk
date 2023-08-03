@@ -1,6 +1,7 @@
 import { Model, DataTypes } from 'sequelize';
 import sequelize from '../sequelize.js'
 
+// 객체의 value를 ENUM으로 만들기
 export const ItemType = {
   COFFEE: 'coffee',
   TEA: 'tea',
@@ -33,8 +34,8 @@ export const ItemType = {
     },
     type: {
         allowNull: false,
-        type: DataTypes.ENUM,
-        values: ['coffee', 'tea', 'juice', 'desert', 'smoothie']
+        type: DataTypes.ENUM([ItemType.COFFEE, ItemType.TEA, ItemType.JUICE, ItemType.DESERT, ItemType.SMOOTHIE]),
+        // values: ['coffee', 'tea', 'juice', 'desert', 'smoothie']
     },
     amount: {
         allowNull: false,
