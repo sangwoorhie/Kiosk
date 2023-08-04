@@ -48,9 +48,17 @@ PATCH api/receipts/:orderCustomerId
 
 [4] Options
 
-1. 옵션추가
-2. 옵션수정
-3. 옵션삭제
+1. 옵션 추가 API
+POST : api/options
+
+2. 옵션 수정 API
+PATCH : api/options/:optionId
+
+3. 옵션 삭제 API 1차 
+DELETE : api/options/:optionId
+
+4. 옵션 삭제 API 2차 
+DELETE : api/response/options/:optionId
 
 
 [5] Managers
