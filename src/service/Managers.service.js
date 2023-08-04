@@ -57,29 +57,32 @@ class ManagerService {
                     status: 409,
                     message: "동일한 이메일이 이미 존재합니다."
                 }
-            }
+            } 
+                await this.managerRepository.signup(email, password)
+                return sign.status200();
+            
 
         // 비밀번호 hash로 암호화저장 + 토큰발급
-        const saltRound = 10;
-        const salt = await bcrypt.genSalt(saltRound);
-        const hashedPw = await bcrypt.hash(password, salt);
+        // const saltRound = 10;
+        // const salt = await bcrypt.genSalt(saltRound);
+        // const hashedPw = await bcrypt.hash(password, salt);
  
         // refreshToken 발급
-        const refreshToken = JWT.sign({}, reSecretKey, {
-             expiresIn: '7d'
-        });
+        // const refreshToken = JWT.sign({}, reSecretKey, {
+        //      expiresIn: '7d'
+        // });
 
-        const token = `Bearer ${refreshToken}`;
-        await this.managerRepository.signup(email, hashedPw, refreshToken);
-        return {
-            status: 201,
-            cookie: {
-                name: 'refreshToken',
-                token,
-                expiresIn: '7d',
-            },
-            message: '회원가입에 성공하였습니다.'
-        }
+        // const token = `Bearer ${refreshToken}`;
+        // await this.managerRepository.signup(email, hashedPw, refreshToken);
+        // return {
+        //     status: 201,
+        //     cookie: {
+        //         name: 'refreshToken',
+        //         token,
+        //         expiresIn: '7d',
+        //     },
+        //     message: '회원가입에 성공하였습니다.'
+        // }
     }catch(error){
             console.log(error);
             return sign.status400();
@@ -87,7 +90,7 @@ class ManagerService {
     }
 
     // 2. 로그인
-        login = async (email, password, existToken) => {
+        login = async (email, password, cookie) => {
             const E = new Message('이메일')
             const pw = new Message('비밀번호')
             const info = new Message('회원정보')
@@ -111,47 +114,61 @@ class ManagerService {
                 password: data.password,
             }
 
-            // 쿠키발급
-            const AccessToken = JWT.sign({ManagerId: manager.ManagerId}, JWT_KEY);
-            const RefreshToken = JWT.sign({ ManagerId: manager.ManagerId }, JWT_KEY);
-
-            // TokenType에는 Bearer가 담기고, Token에는 existRefreshToken이 담김.
-            const [ TokenType, Token ] = ( existToken ?? "").split(" ");
-            const verified = JWT.verify(Token, JWT_KEY);
-
-            // cookie에 existRefreshToken, 즉 Token이 존재하고, 그게 DB와 일치하면서(data.token) + 구조분해한 할당한 토큰(Token)을 JWT키로 인증한 결과가 존재할때(true)일때
-            if(Token == data.token && verified){
-                return{
-                    status: 200,
-                    message: "로그인이 완료되었습니다.",
-                    AccessToken: AccessToken,
-                    RefreshToken: RefreshToken,
-                }
-            }
-            
-            // 1. refresh토큰이 없는 경우 토큰 재발급 (AccessToken토큰은 기본으로 있음)
-
-            // 2. A가 로그인을 하고 로그아웃을 안 한 상태로 B가 같은 클라이언트에서 로그인 하면
-            // A가 갖고 있던 refresh token이 쿠키에 남아있는다.
-            // 이런 경우 refresh token이 일치하지는 않으므로 다시 refresh 토큰을 발급하여 넣어준다.
-            // 쿠키에 있는 토큰이랑, 서버(DB)에 있는 토큰이랑 불일치
-        
-            // 3. 쿠키에 있는 토큰이랑, 서버(DB)에 있는 토큰이랑 일치하지만, 만료기간이 지나서 verified가 안되는 경우
-
-            if(!existToken || Token !== data.token || (Token == data.token && !verified)){
-                await this.managerRepository.saveToken(email, RefreshToken);
-                return {
-                    status: 200,
-                    message: "로그인이 완료되었습니다.",
-                    AccessToken: AccessToken,
-                    RefreshToken: RefreshToken,
-                }
-            }
+            const Token = JWT.sign({ManagerId: data.ManagerId}, JWT_KEY)
+            console.log("Token:", Token)
+ 
+            await this.managerRepository.saveToken(email, Token);
+            return {
+                status: 200,
+                message: "로그인에 성공하였습니다.",
+                Token: Token
+            };
         }catch(error){
             console.log(error);
             return log.status400();
         }
         }; 
+
+            // 1
+            // // 쿠키발급
+            // const AccessToken = JWT.sign({ ManagerId: manager.ManagerId }, JWT_KEY);
+            // const RefreshToken = JWT.sign({ ManagerId: manager.ManagerId }, JWT_KEY);
+
+            // // TokenType에는 Bearer가 담기고, Token에는 existRefreshToken이 담김.
+            // const [ TokenType, Token ] = ( existToken ?? "").split(" ");
+            // const verified = JWT.verify(Token, JWT_KEY);
+
+            // // cookie에 existRefreshToken, 즉 Token이 존재하고, 그게 DB와 일치하면서(data.token) + 구조분해한 할당한 토큰(Token)을 JWT키로 인증한 결과가 존재할때(true)일때
+            // if(Token == data.token && verified){
+            //     return{
+            //         status: 200,
+            //         message: "로그인이 완료되었습니다.",
+            //         AccessToken: AccessToken,
+            //         RefreshToken: RefreshToken,
+            //     }
+            // }
+            
+            // // 1. refresh토큰이 없는 경우 토큰 재발급 (AccessToken토큰은 기본으로 있음)
+
+            // // 2. A가 로그인을 하고 로그아웃을 안 한 상태로 B가 같은 클라이언트에서 로그인 하면
+            // // A가 갖고 있던 refresh token이 쿠키에 남아있는다.
+            // // 이런 경우 refresh token이 일치하지는 않으므로 다시 refresh 토큰을 발급하여 넣어준다.
+            // // 쿠키에 있는 토큰이랑, 서버(DB)에 있는 토큰이랑 불일치
+        
+            // // 3. 쿠키에 있는 토큰이랑, 서버(DB)에 있는 토큰이랑 일치하지만, 만료기간이 지나서 verified가 안되는 경우
+
+            // if(!existToken || Token !== data.token || (Token == data.token && !verified)){
+            //     await this.managerRepository.saveToken(email, RefreshToken);
+            //     return {
+            //         status: 200,
+            //         message: "로그인이 완료되었습니다.",
+            //         AccessToken: AccessToken,
+            //         RefreshToken: RefreshToken,
+            //     }
+            // }
+
+
+            // 2
             // const ID = data.ManagerId;
             // const [ authType, authToken ] = (existToken ?? "").split(" ");
             // const accessToken = JWT.sign({ ID }, secretKey, {
@@ -278,7 +295,7 @@ class ManagerService {
         }
 
         // 정보 수정
-        const updateInfo = await this.managerRepository.edit(ManagerId, email, newpw)
+        const updateInfo = await this.managerRepository.edit(ManagerId, newpw)
         if(updateInfo){
             return editInfo.status200();
         }

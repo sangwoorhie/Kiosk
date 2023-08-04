@@ -4,11 +4,10 @@ class ManagerRepository{
 
 
     // 1. 회원가입
-    signup = async (email, password, refreshToken) => {
+    signup = async (email, password) => {
         const create = await Manager.create({
             email,
             password,
-            token: refreshToken
         })
         return create;
     }

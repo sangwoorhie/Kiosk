@@ -63,7 +63,7 @@ class OptionsService {
             if(option){
             
             // 옵션 수정, 캐시저장
-            await this.cacheInit.CacheInit();
+            await this.cacheInit.cacheInit();
                 return edit.status200();
             } else {
                 return edit.status400();
@@ -98,10 +98,8 @@ class OptionsService {
     };
 
 
-
-
     // 4. 옵션 삭제 2차
-    answerRemoveOption = async (optionId, answer) => {
+    remove = async (optionId, answer) => {
         const option = new Message('해당 옵션');
         const getRidof = new Message('옵션 삭제')
 
@@ -115,8 +113,9 @@ class OptionsService {
         const deleteOption = Cache.get(`deleteOption${optionId}`);
         if (answer == "예" && deleteOption == optionId){
             const remove = await this.optionRepository.remove(optionId);
+            console.log("remove:", remove); // 삭제한 레코드 수가 반환됨 (1개삭제시 1반환)
             if(remove){
-                await this.cacheInit.CacheInit();
+                await this.cacheInit.cacheInit();
                 return getRidof.status200();
             } else {
                 return getRidof.status400();

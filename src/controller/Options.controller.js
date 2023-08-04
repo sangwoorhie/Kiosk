@@ -30,7 +30,7 @@ class OptionsController {
     answerRemoveOption = async (req, res) => {
         const { optionId } = req.params;
         const { answer } = req.body;
-        const { status, message } = await this.optionService.answerRemoveOption(optionId, answer);
+        const { status, message } = await this.optionsService.remove(optionId, answer);
         return res.status(status).json({message});
     }
 

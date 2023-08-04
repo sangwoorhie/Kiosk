@@ -6,7 +6,7 @@ class CacheInit {
 
     // 1. 서버가 실행될때 DB에 option 데이터를 요청해 모두 서버 메모리에 캐싱, 사용자 빠른 응답처리 및 DB접근 최소화
     // 백틱안의 option은 forEach에 쓰인 option
-    cacheinit = async () => {
+    cacheInit = async () => {
         const options = await this.optionsRepository.getOptions();
         // console.log("options:",options)
         options.forEach(option => {

@@ -1,6 +1,6 @@
 import JWT from 'jsonwebtoken';
 import { JWT_KEY } from '../constants';
-import { Customers } from '../db'
+import { Managers } from '../db' 
 
 const middleware = async (req, res, next) => {
     try{
@@ -15,14 +15,14 @@ const middleware = async (req, res, next) => {
 
     // 복호화된 토큰
     const decodedToken = JWT.verify( Token, JWT_KEY );
-    const customerId = decodedToken.customerId;
+    const ManagerId = decodedToken.ManagerId;
 
-    const customer = await Customers.findOne({where: {customerId}});
+    const customer = await Managers.findOne({where: {ManagerId}});
 
-    if(!customer){
-        return res.status(404).json({message: "customer not found"})
+    if(!manager){
+        return res.status(404).json({message: "user not found"})
     }
-    res.locals.user = customer;
+    res.locals.user = manager;
     next();
 }catch(error){
     console.log(error);

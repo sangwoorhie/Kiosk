@@ -2,31 +2,33 @@ import ManagerService from '../service/Managers.service.js'
 // import JWT from 'jsonwebtoken';
 
 
-export class ManagerController {
+class ManagerController {
     managerService = new ManagerService()
 
 
 // 1. 회원가입
 signup = async (req, res) => {
     const { email, password, confirm } = req.body;
-    const { status, message, cookie } = await this.managerService.signup(email, password, confirm);
-    
+    const { status, message } = await this.managerService.signup(email, password, confirm);
     // cookie값이 있다면
-    if(cookie){
-        res.cookie(cookie.name, cookie.token, { expiresIn: cookie.expiresIn });
-    }
-    return res.status(status).json({message, cookie})
+    // if(cookie){
+    //     res.cookie(cookie.name, cookie.token, { expiresIn: cookie.expiresIn });
+    // }
+    return res.status(status).json({message});
 }
 
 
 // 2. 로그인
 login = async (req, res) => {
-    const existToken = req.cookies.RefreshToken;
+    // const existToken = req.cookies.RefreshToken;
     const { email, password } = req.body;
-    const { status, message, AccessToken, RefreshToken } = await this.managerService.login(email, password, existToken); 
+    const { status, message, Token } = await this.managerService.login(email, password, Token); 
     
-    res.cookie("AccessToken", `Bearer ${AccessToken}`);
-    res.cookie("RefreshToken", `Bearer ${RefreshToken}`);
+    // AccessToken, RefreshToken
+    // res.cookie("AccessToken", `Bearer ${AccessToken}`);
+    // res.cookie("RefreshToken", `Bearer ${RefreshToken}`);
+
+    ////
 
     // res.cookie(accesscookie.name, accesscookie.token, { 
     //     expiresIn: accesscookie.expiresIn
@@ -36,7 +38,7 @@ login = async (req, res) => {
     // });
 
 
-    return res.status(status).json({message});
+    return res.status(status).json({message, Token});
 }
 
 

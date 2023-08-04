@@ -8,19 +8,19 @@ import sequelize from '../sequelize.js'
       allowNull: false,
       autoIncrement: true,
       primaryKey: true,
-      type: DataTypes.BIGINT,
+      type: DataTypes.INTEGER,
     },
     email: {
       allowNull: false,
-      type: DataTypes.BIGINT,
+      type: DataTypes.STRING,
       unique: true,
     },
     password: {
       allowNull: false,
-      type: DataTypes.BIGINT,
+      type: DataTypes.STRING,
     },
     token: {
-      type: DataTypes.BIGINT,
+      type: DataTypes.STRING,
     },
     createdAt: {
       allowNull: false,

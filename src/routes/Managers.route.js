@@ -18,13 +18,13 @@ router.post('/login', managerController.login)
 router.post('/logout', managerController.logout)
 
 // 4. 회원정보 조회 GET : localhost:3000/api/manager/:ManagerId
-router.get('/:ManagerId', authmiddleware, managerController.info)
+router.get('/:ManagerId', managerController.info)
 
 // 5. 회원정보 수정 (비밀번호만 수정 가능) PATCH : localhost:3000/api/manager/:ManagerId
-router.patch('/:ManagerId', authmiddleware, managerController.edit)
+router.patch('/:ManagerId', managerController.edit)
 
 // 6. 회원정보 삭제 DELETE : localhost:3000/api/manager/:ManagerId
-router.delete('/:ManagerId', authmiddleware, managerController.remove)
+router.delete('/:ManagerId', managerController.remove)
 
 
 

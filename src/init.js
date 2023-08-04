@@ -35,7 +35,7 @@ export class Server {
     runServer = async() => { // async-await, try-catch
     try{
         await this.DBconnection(); // 테스트함수
-        await this.cache.cacheinit(); //Cache 연결 함수
+        await this.cache.cacheInit(); //Cache 연결 함수
         return this.serverListen(); // 실행함수
     }catch(error){
         return this.serverErrorHandler(error); // 에러함수
